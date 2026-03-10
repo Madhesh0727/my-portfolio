@@ -22,7 +22,9 @@ class Settings(db.Model):
     twitter_url = db.Column(db.String(200), nullable=True)
     instagram_url = db.Column(db.String(200), nullable=True)
     whatsapp_url = db.Column(db.String(200), nullable=True)
-    email = db.Column(db.String(100), default='madhesh@example.com')
+    email = db.Column(db.String(100), default='madhesh0727@gmail.com')
+    location = db.Column(db.String(200), default='Chennai, India')
+    specialty = db.Column(db.String(200), default='AI/ML, Cybersecurity')
     
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

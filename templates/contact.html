@@ -40,7 +40,8 @@
                         </div>
                         <div>
                             <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Coordinates</div>
-                            <div class="text-gray-300 font-mono">Chennai, India</div>
+                            <div class="text-gray-300 font-mono">{{ settings.location if settings and settings.location
+                                else 'Chennai, India' }}</div>
                         </div>
                     </div>
 

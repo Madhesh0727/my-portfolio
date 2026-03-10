@@ -84,7 +84,8 @@
                 <div class="flex flex-col sm:flex-row sm:items-center">
                     <span
                         class="text-green-500 w-full sm:w-36 font-bold mb-1 sm:mb-0 uppercase tracking-wide text-sm">Location:</span>
-                    <span class="text-gray-300 font-mono">Chennai, India</span>
+                    <span class="text-gray-300 font-mono">{{ settings.location if settings and settings.location else
+                        'Chennai, India' }}</span>
                 </div>
                 <div class="flex flex-col sm:flex-row sm:items-center">
                     <span
@@ -96,10 +97,17 @@
                     <span
                         class="text-green-500 w-full sm:w-36 font-bold mb-1 sm:mb-0 uppercase tracking-wide text-sm mt-1">Specialty:</span>
                     <div class="flex flex-wrap gap-2 text-gray-300 font-mono">
+                        {% if settings and settings.specialty %}
+                        {% for spec in settings.specialty.split(',') %}
+                        <span class="px-2 py-1 bg-green-900 bg-opacity-30 border border-green-500 text-xs rounded-sm">{{
+                            spec.strip() }}</span>
+                        {% endfor %}
+                        {% else %}
                         <span
                             class="px-2 py-1 bg-green-900 bg-opacity-30 border border-green-500 text-xs rounded-sm">AI/ML</span>
                         <span
                             class="px-2 py-1 bg-green-900 bg-opacity-30 border border-green-500 text-xs rounded-sm">Cybersecurity</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>

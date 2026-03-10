@@ -81,7 +81,9 @@ def create_app(config_class=Config):
                 theme_color="#00ff00",
                 github_url="https://github.com/madhesh",
                 linkedin_url="https://linkedin.com/in/madhesh",
-                email="madhesh@example.com"
+                email="madhesh0727@gmail.com",
+                location="Chennai, India",
+                specialty="AI/ML, Cybersecurity"
             )
             db.session.add(settings)
             db.session.commit()

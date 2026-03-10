@@ -28,6 +28,8 @@ class SettingsForm(FlaskForm):
     instagram_url = StringField('Instagram URL', validators=[Optional(), URL()])
     whatsapp_url = StringField('WhatsApp URL', validators=[Optional(), URL()])
     email = StringField('Email', validators=[Optional(), Email()])
+    location = StringField('Location (e.g. Chennai, India)', validators=[Optional(), Length(max=200)])
+    specialty = StringField('Specialty (Comma separated, e.g. AI/ML, Cybersecurity)', validators=[Optional(), Length(max=200)])
     
     # Files
     resume = FileField('Resume (PDF)', validators=[

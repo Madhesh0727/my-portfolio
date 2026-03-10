@@ -302,6 +302,8 @@ def settings():
         settings.instagram_url = form.instagram_url.data
         settings.whatsapp_url = form.whatsapp_url.data
         settings.email = form.email.data
+        settings.location = form.location.data
+        settings.specialty = form.specialty.data
         
         if form.profile_image.data and hasattr(form.profile_image.data, 'filename') and form.profile_image.data.filename:
             if settings.profile_image:
