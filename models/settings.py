@@ -9,7 +9,7 @@ class Settings(db.Model):
     owner_name = db.Column(db.String(100), default="MADHESH RASU A S")
     contact_text = db.Column(db.Text, default="I'm always interested in hearing about new opportunities in AI/ML and cybersecurity.")
     contact_page_text = db.Column(db.Text, default="Opening a secure channel. Have an opportunity or project? My neural network is always listening for new challenges in AI/ML and Security.")
-    bio = db.Column(db.Text, default="")
+    bio = db.Column(db.Text, default="Cybersecurity Student & AI/ML Enthusiast building the future with neural networks and creative code.")
     what_i_do = db.Column(db.Text, default="Build responsive and interactive web applications\nDevelop secure backend systems with Python & Flask\nDesign cybersecurity solutions and implementations\nWork with AI/ML technologies for innovative solutions")
     tagline = db.Column(db.String(200), default="AI/ML Engineer & Cybersecurity Researcher")
     profile_image = db.Column(db.String(200), nullable=True)

@@ -8,7 +8,7 @@ class SettingsForm(FlaskForm):
     owner_name = StringField('Owner Name (Hero Headline)', validators=[Optional(), Length(max=100)])
     contact_text = TextAreaField('Contact CTA Text (Bottom of page)', validators=[Optional(), Length(max=500)])
     contact_page_text = TextAreaField('Contact Page Intro text', validators=[Optional(), Length(max=1000)])
-    bio = TextAreaField('Bio', validators=[Optional(), Length(max=1000)])
+    bio = TextAreaField('Who I Am (Bio)', validators=[Optional(), Length(max=1000)])
     what_i_do = TextAreaField('What I Do (One item per line)', validators=[Optional(), Length(max=2000)])
     tagline = StringField('Tagline', validators=[Optional(), Length(max=200)])
     profile_image = FileField('Profile Image', validators=[
