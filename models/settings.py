@@ -10,6 +10,7 @@ class Settings(db.Model):
     contact_text = db.Column(db.Text, default="I'm always interested in hearing about new opportunities in AI/ML and cybersecurity.")
     contact_page_text = db.Column(db.Text, default="Opening a secure channel. Have an opportunity or project? My neural network is always listening for new challenges in AI/ML and Security.")
     bio = db.Column(db.Text, default="")
+    what_i_do = db.Column(db.Text, default="Build responsive and interactive web applications\nDevelop secure backend systems with Python & Flask\nDesign cybersecurity solutions and implementations\nWork with AI/ML technologies for innovative solutions")
     tagline = db.Column(db.String(200), default="AI/ML Engineer & Cybersecurity Researcher")
     profile_image = db.Column(db.String(200), nullable=True)
     theme_color = db.Column(db.String(7), default='#00ff00')

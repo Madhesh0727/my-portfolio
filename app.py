@@ -76,6 +76,7 @@ def create_app(config_class=Config):
         if not Settings.query.first():
             settings = Settings(
                 bio="Cybersecurity Student & AI/ML Enthusiast building the future with neural networks and creative code.",
+                what_i_do="Build responsive and interactive web applications\nDevelop secure backend systems with Python & Flask\nDesign cybersecurity solutions and implementations\nWork with AI/ML technologies for innovative solutions",
                 tagline="AI/ML Engineer | Cybersecurity Researcher | Neural Network Architect",
                 theme_color="#00ff00",
                 github_url="https://github.com/madhesh",

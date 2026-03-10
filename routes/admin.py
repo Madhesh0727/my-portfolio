@@ -293,6 +293,7 @@ def settings():
         settings.contact_text = form.contact_text.data
         settings.contact_page_text = form.contact_page_text.data
         settings.bio = form.bio.data
+        settings.what_i_do = form.what_i_do.data
         settings.tagline = form.tagline.data
         settings.theme_color = form.theme_color.data
         settings.github_url = form.github_url.data
