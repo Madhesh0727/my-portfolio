@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Madhesh{% endblock %}
+
+{% block content %}
+<section class="py-32 min-h-screen">
+    <div class="container mx-auto px-6">
+        <h1 class="text-5xl font-bold text-center mb-16 neon-text glitch" data-text="THOUGHT LOGS">THOUGHT LOGS</h1>
+
+        <div class="grid lg:grid-cols-3 gap-12">
+            <!-- Sidebar with Filters -->
+            <div class="lg:col-span-1">
+                <div class="cyber-card sticky top-24">
+                    <h3 class="text-2xl font-bold mb-6 neon-text border-b border-green-500 pb-2">CATEGORIES</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="{{ url_for('public.blog') }}"
+                                class="flex justify-between items-center group {% if not current_category or current_category == 'all' %}text-green-500 font-bold{% else %}text-gray-400 hover:text-green-500{% endif %}">
+                                <span><i class="fas fa-terminal mr-2 text-xs"></i> All Logs</span>
+                            </a>
+                        </li>
+                        {% for cat in categories %}
+                        <li>
+                            <a href="{{ url_for('public.blog', category=cat) }}"
+                                class="flex justify-between items-center group {% if current_category == cat %}text-green-500 font-bold{% else %}text-gray-400 hover:text-green-500{% endif %}">
+                                <span><i class="fas fa-terminal mr-2 text-xs"></i> {{ cat }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Posts Grid -->
+            <div class="lg:col-span-2 space-y-8">
+                {% for post in posts.items %}
+                <article class="cyber-card animate-on-scroll relative group overflow-hidden flex flex-col h-full"
+                    data-tilt>
+
+                    <div class="absolute right-0 top-0 bg-green-500 text-black text-xs font-bold px-3 py-1 z-10">
+                        {{ post.created_at.strftime('%m.%d.%y') }}
+                    </div>
+
+                    {% if post.get_primary_image() %}
+                    {% set ext = post.get_primary_image().split('.')[-1] | lower %}
+                    {% if ext in ['mp4', 'webm', 'ogg', 'mov'] %}
+                    <video loop autoplay muted
+                        class="w-full aspect-video object-cover mb-4 rounded border border-gray-800 opacity-80 group-hover:opacity-100 transition-opacity">
+                        <source src="{{ url_for('static', filename='uploads/blog/' + post.get_primary_image()) }}"
+                            type="video/{{ 'mp4' if ext == 'mov' else ext }}">
+                    </video>
+                    {% else %}
+                    <img src="{{ url_for('static', filename='uploads/blog/' + post.get_primary_image()) }}"
+                        alt="{{ post.title }}"
+                        class="w-full aspect-video object-cover mb-4 rounded border border-gray-800 opacity-80 group-hover:opacity-100 transition-opacity">
+                    {% endif %}
+                    {% endif %}
+
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="text-green-500 text-xs tracking-widest uppercase mb-2">{{ post.category }}</div>
+                        <h2 class="text-3xl font-bold mb-4 group-hover:text-green-500 transition-colors">
+                            <a href="{{ url_for('public.blog_post', slug=post.slug) }}">{{ post.title }}</a>
+                        </h2>
+
+                        <p class="text-gray-400 mb-6 leading-relaxed flex-grow">
+                            {{ post.excerpt or post.content[:200] }}...
+                        </p>
+
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="text-xs text-gray-500"><i class="fas fa-eye mr-1"></i> {{ post.views }}
+                                views</span>
+                            <a href="{{ url_for('public.blog_post', slug=post.slug) }}"
+                                class="inline-flex items-center text-green-500 font-bold hover:underline">
+                                DECRYPT FULL LOG <i class="fas fa-unlock ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                {% else %}
+                <div class="text-center py-20 text-gray-500 cyber-card">
+                    <i class="fas fa-database text-6xl mb-4"></i>
+                    <p>No knowledge entries found in this sector.</p>
+                </div>
+                {% endfor %}
+
+                <!-- Pagination -->
+                {% if posts.pages > 1 %}
+                <div class="flex justify-between items-center pt-8">
+                    {% if posts.has_prev %}
+                    <a href="{{ url_for('public.blog', page=posts.prev_num, category=current_category) }}"
+                        class="px-4 py-2 border border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition">
+                        <i class="fas fa-arrow-left mr-2"></i> PREV
+                    </a>
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+
+                    <span class="text-gray-400 font-mono">SECTOR {{ posts.page }} / {{ posts.pages }}</span>
+
+                    {% if posts.has_next %}
+                    <a href="{{ url_for('public.blog', page=posts.next_num, category=current_category) }}"
+                        class="px-4 py-2 border border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition">
+                        NEXT <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

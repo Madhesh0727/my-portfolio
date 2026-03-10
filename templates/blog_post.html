@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Madhesh{% endblock %}
+
+{% block content %}
+<section class="py-32 min-h-screen">
+    <div class="container mx-auto px-6 max-w-3xl">
+        <a href="{{ url_for('public.blog') }}"
+            class="inline-flex items-center text-green-500 hover:text-white font-mono mb-8 group transition">
+            <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> RETURN TO LOGS
+        </a>
+
+        <article class="cyber-card p-6 md:p-12 animate-on-scroll">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 neon-text glitch" data-text="{{ post.title }}">{{ post.title
+                }}</h1>
+
+            <div
+                class="flex flex-wrap gap-4 items-center mb-10 text-green-500 font-mono text-sm border-b border-gray-800 pb-6">
+                <span><i class="fas fa-clock mr-2"></i> {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                <span class="text-gray-600">|</span>
+                <span><i class="fas fa-tag mr-2"></i> {{ post.category }}</span>
+                <span class="text-gray-600">|</span>
+                <span><i class="fas fa-eye mr-2"></i> {{ post.views }} views</span>
+            </div>
+
+            {% if post.get_images_list() %}
+            <div class="relative w-full max-w-3xl mx-auto mb-12 group">
+                <!-- Carousel Container -->
+                <div id="image-carousel"
+                    class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar rounded shadow-[0_0_20px_rgba(0,255,0,0.1)] border border-green-500">
+                    {% for image_filename in post.get_images_list() %}
+                    <div class="w-full flex-shrink-0 snap-center relative aspect-video">
+                        {% set ext = image_filename.split('.')[-1] | lower %}
+                        {% if ext in ['mp4', 'webm', 'ogg', 'mov'] %}
+                        <video loop controls autoplay muted class="absolute inset-0 w-full h-full object-cover">
+                            <source src="{{ url_for('static', filename='uploads/blog/' + image_filename) }}"
+                                type="video/{{ 'mp4' if ext == 'mov' else ext }}">
+                            Your browser does not support the video tag.
+                        </video>
+                        {% else %}
+                        <img src="{{ url_for('static', filename='uploads/blog/' + image_filename) }}"
+                            alt="{{ post.title }}" class="absolute inset-0 w-full h-full object-cover bg-black">
+                        {% endif %}
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 pointer-events-none">
+                        </div>
+                        <div
+                            class="absolute top-4 right-4 bg-black bg-opacity-70 text-green-500 text-xs font-mono px-3 py-1 rounded-full border border-green-500">
+                            {{ loop.index }} / {{ loop.length }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if post.get_images_list()|length > 1 %}
+                <!-- Navigation Arrows -->
+                <button
+                    onclick="document.getElementById('image-carousel').scrollBy({ left: -document.getElementById('image-carousel').clientWidth, behavior: 'smooth' })"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-70 text-green-500 p-3 rounded-full border border-green-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-green-500 hover:text-black focus:outline-none z-10 hidden md:block">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button
+                    onclick="document.getElementById('image-carousel').scrollBy({ left: document.getElementById('image-carousel').clientWidth, behavior: 'smooth' })"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-black bg-opacity-70 text-green-500 p-3 rounded-full border border-green-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-green-500 hover:text-black focus:outline-none z-10 hidden md:block">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <!-- Pagination Dots -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+                    {% for image_filename in post.get_images_list() %}
+                    <div
+                        class="w-2 h-2 rounded-full border border-green-500 indicator-dot {% if loop.first %}bg-green-500{% else %}bg-transparent{% endif %} transition-colors duration-300">
+                    </div>
+                    {% endfor %}
+                </div>
+                <script>
+                    const carousel = document.getElementById('image-carousel');
+                    const dots = document.querySelectorAll('.indicator-dot');
+                    if (carousel && dots.length > 0) {
+                        carousel.addEventListener('scroll', () => {
+                            let scrollLeft = carousel.scrollLeft;
+                            let width = carousel.clientWidth;
+                            let activeIndex = Math.round(scrollLeft / width);
+                            dots.forEach((dot, index) => {
+                                if (index === activeIndex) {
+                                    dot.classList.add('bg-green-500');
+                                    dot.classList.remove('bg-transparent');
+                                } else {
+                                    dot.classList.remove('bg-green-500');
+                                    dot.classList.add('bg-transparent');
+                                }
+                            });
+                        });
+                    }
+                </script>
+                {% endif %}
+                <style>
+                    /* Hide scrollbar for smooth carousel UI */
+                    .hide-scrollbar::-webkit-scrollbar {
+                        display: none;
+                    }
+
+                    .hide-scrollbar {
+                        -ms-overflow-style: none;
+                        scrollbar-width: none;
+                    }
+                </style>
+            </div>
+            {% endif %}
+
+            <div
+                class="prose prose-invert prose-green max-w-none text-gray-300 leading-relaxed text-lg tracking-wide space-y-6">
+                <!-- Data payload content -->
+                {{ post.content | safe }}
+            </div>
+
+            <div
+                class="mt-16 pt-8 border-t border-gray-800 flex justify-between items-center text-sm font-mono text-gray-500">
+                <p>END OF TRANSMISSION.</p>
+                <div class="text-green-500 animate-pulse">
+                    █ █ █ █ █ █ █ █ █
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}Madhesh - AI/ML Engineer & Cybersecurity Expert{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden hero-section">
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+
+
+        <h1 class="glitch text-4xl md:text-7xl mb-4 leading-tight"
+            data-text="{{ settings.owner_name if settings and settings.owner_name else 'MADHESH RASU A S' }}">{{
+            settings.owner_name if settings and settings.owner_name else 'MADHESH RASU A S' }}</h1>
+
+        <div
+            class="text-xl md:text-3xl text-green-500 mb-6 flex flex-wrap items-center justify-center font-bold min-h-[3rem]">
+            <span id="typewriter" class="mr-1"></span><span class="animate-pulse">|</span>
+        </div>
+
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            {{ settings.tagline if settings else "Building intelligent systems and securing the digital future." }}
+        </p>
+
+        <!-- Quick Access Social Icons -->
+        <div class="flex justify-center space-x-4 mb-8">
+            {% if settings %}
+            {% if settings.github_url %}
+            <a href="{{ settings.github_url }}" target="_blank" class="social-icon text-2xl">
+                <i class="fab fa-github"></i>
+            </a>
+            {% endif %}
+            {% if settings.linkedin_url %}
+            <a href="{{ settings.linkedin_url }}" target="_blank" class="social-icon text-2xl">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            {% endif %}
+            {% if settings.whatsapp_url %}
+            <a href="{{ settings.whatsapp_url }}" target="_blank" class="social-icon text-2xl">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            {% endif %}
+            {% if settings.instagram_url %}
+            <a href="{{ settings.instagram_url }}" target="_blank" class="social-icon text-2xl">
+                <i class="fab fa-instagram"></i>
+            </a>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-8">
+            <a href="{{ url_for('public.projects') }}"
+                class="w-full sm:w-auto px-8 py-3 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition neon-border text-center">
+                View Projects
+            </a>
+            <a href="{{ url_for('public.contact') }}"
+                class="w-full sm:w-auto px-8 py-3 bg-green-500 text-black font-bold hover:bg-green-400 transition text-center">
+                Contact Me
+            </a>
+            {% if settings and settings.resume_path %}
+            <a href="{{ url_for('public.download_resume') }}"
+                class="w-full sm:w-auto px-8 py-3 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition data-stream flex items-center justify-center text-center">
+                <i class="fas fa-file-pdf mr-2"></i> Download Resume
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <i class="fas fa-chevron-down text-green-500 text-3xl"></i>
+    </div>
+</section>
+
+<!-- About Preview -->
+<section class="py-20 container mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center mb-12 neon-text glitch" data-text="ABOUT ME">ABOUT ME</h2>
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="animate-on-scroll order-2 md:order-1">
+            <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                {{ settings.bio if settings else "Cybersecurity student and AI/ML enthusiast passionate about building
+                intelligent systems and securing digital infrastructure. I combine cutting-edge AI technologies with
+                robust security practices to create innovative solutions." }}
+            </p>
+            <div class="space-y-4 mt-8">
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                    <span
+                        class="text-green-500 w-full sm:w-36 font-bold mb-1 sm:mb-0 uppercase tracking-wide text-sm">Location:</span>
+                    <span class="text-gray-300 font-mono">Chennai, India</span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                    <span
+                        class="text-green-500 w-full sm:w-36 font-bold mb-1 sm:mb-0 uppercase tracking-wide text-sm">Email:</span>
+                    <span class="text-gray-300 font-mono break-all">{{ settings.email if settings else
+                        "madhesh@example.com" }}</span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-start group">
+                    <span
+                        class="text-green-500 w-full sm:w-36 font-bold mb-1 sm:mb-0 uppercase tracking-wide text-sm mt-1">Specialty:</span>
+                    <div class="flex flex-wrap gap-2 text-gray-300 font-mono">
+                        <span
+                            class="px-2 py-1 bg-green-900 bg-opacity-30 border border-green-500 text-xs rounded-sm">AI/ML</span>
+                        <span
+                            class="px-2 py-1 bg-green-900 bg-opacity-30 border border-green-500 text-xs rounded-sm">Cybersecurity</span>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ url_for('public.about') }}" class="inline-block mt-8 text-green-500 hover:text-green-400 group">
+                Learn More About Me
+                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+            </a>
+        </div>
+
+        <div class="order-1 md:order-2 flex justify-center">
+            {% if settings and settings.profile_image %}
+            <img src="{{ url_for('static', filename='uploads/profile/' + settings.profile_image) }}" alt="Madhesh"
+                class="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-green-500 object-cover float profile-glow">
+            {% else %}
+            <div
+                class="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-green-500 flex items-center justify-center bg-black float profile-glow">
+                <i class="fas fa-user-circle text-8xl text-green-500"></i>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Skills Preview -->
+<section class="py-20 bg-darker-bg">
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12 neon-text glitch" data-text="TECHNICAL SKILLS">TECHNICAL SKILLS
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            {% for category, skills in skills_by_category.items() %}
+            {% if loop.index <= 4 %} <div class="cyber-card animate-on-scroll skill-bar-container" data-tilt>
+                <h3 class="text-xl font-bold mb-6 neon-text">{{ category|replace('-', ' ')|title }}</h3>
+                {% for skill in skills[:5] %}
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-300">{{ skill.name }}</span>
+                        <span class="text-green-500">{{ skill.level }}%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: {{ skill.level }}%" data-width="{{ skill.level }}">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+</section>
+
+<!-- Featured Projects -->
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12 neon-text glitch" data-text="FEATURED PROJECTS">FEATURED
+            PROJECTS</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for project in featured_projects %}
+            <div class="project-card cyber-card animate-on-scroll group" data-tilt>
+                {% if project.get_primary_image() %}
+                <div class="relative overflow-hidden rounded-lg mb-4 h-48">
+                    <img src="{{ url_for('static', filename='uploads/projects/' + project.get_primary_image()) }}"
+                        alt="{{ project.title }}"
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                </div>
+                {% else %}
+                <div class="w-full h-48 bg-gray-800 mb-4 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-robot text-5xl text-gray-600"></i>
+                </div>
+                {% endif %}
+
+                <h3 class="text-xl font-bold mb-2 neon-text">{{ project.title }}</h3>
+                <p class="text-gray-400 mb-4 text-sm">{{ project.description[:100] }}...</p>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    {% for tech in project.get_tech_list()[:3] %}
+                    <span class="px-2 py-1 text-xs border border-green-500 text-green-500 rounded-full">{{ tech
+                        }}</span>
+                    {% endfor %}
+                    {% if project.get_tech_list()|length > 3 %}
+                    <span class="px-2 py-1 text-xs border border-green-500 text-green-500 rounded-full">+{{
+                        project.get_tech_list()|length - 3 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">{{ project.category }}</span>
+                    <a href="{{ url_for('public.project_detail', id=project.id) }}"
+                        class="inline-flex items-center text-green-500 hover:text-green-400 group">
+                        View
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-4 text-center text-gray-400 py-12">
+                <i class="fas fa-code text-5xl mb-4"></i>
+                <p>No featured projects yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="{{ url_for('public.projects') }}"
+                class="inline-block px-8 py-3 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition">
+                View All Projects
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Blog Posts -->
+<section class="py-20 bg-darker-bg">
+    <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center mb-12 neon-text glitch" data-text="LATEST THOUGHTS">LATEST THOUGHTS
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for post in recent_posts %}
+            <div class="cyber-card animate-on-scroll flex flex-col h-full" data-tilt>
+                {% if post.get_primary_image() %}
+                {% set ext = post.get_primary_image().split('.')[-1] | lower %}
+                {% if ext in ['mp4', 'webm', 'ogg', 'mov'] %}
+                <video loop autoplay muted class="w-full aspect-video object-cover mb-4 rounded-lg flex-shrink-0">
+                    <source src="{{ url_for('static', filename='uploads/blog/' + post.get_primary_image()) }}"
+                        type="video/{{ 'mp4' if ext == 'mov' else ext }}">
+                </video>
+                {% else %}
+                <img src="{{ url_for('static', filename='uploads/blog/' + post.get_primary_image()) }}"
+                    alt="{{ post.title }}" class="w-full aspect-video object-cover mb-4 rounded-lg flex-shrink-0">
+                {% endif %}
+                {% endif %}
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold mb-2 neon-text">{{ post.title }}</h3>
+                    <p class="text-gray-400 mb-4 text-sm flex-grow">{{ post.excerpt or post.content[:120] }}...</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">{{ post.created_at.strftime('%b %d, %Y') }}</span>
+                    <a href="{{ url_for('public.blog_post', slug=post.slug) }}"
+                        class="inline-flex items-center text-green-500 hover:text-green-400 group">
+                        Read
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-3 text-center text-gray-400 py-12">
+                <i class="fas fa-blog text-5xl mb-4"></i>
+                <p>No blog posts yet. Coming soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="py-20">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl font-bold mb-6 neon-text glitch" data-text="READY TO COLLABORATE?">READY TO COLLABORATE?
+        </h2>
+        <p class="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+            {{ settings.contact_text if settings and settings.contact_text else "I'm always interested in hearing about
+            new opportunities in AI/ML and cybersecurity." }}
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a href="{{ url_for('public.contact') }}"
+                class="inline-block px-12 py-4 bg-green-500 text-black font-bold text-lg hover:bg-green-400 transition neon-border">
+                <i class="fas fa-paper-plane mr-2"></i>Get In Touch
+            </a>
+            {% if settings and settings.resume_path %}
+            <a href="{{ url_for('public.download_resume') }}"
+                class="inline-block px-12 py-4 border-2 border-green-500 text-green-500 font-bold text-lg hover:bg-green-500 hover:text-black transition">
+                <i class="fas fa-download mr-2"></i>Download Resume
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

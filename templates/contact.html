@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Madhesh{% endblock %}
+
+{% block content %}
+<section class="py-32 min-h-screen flex items-center">
+    <div class="container mx-auto px-6">
+        <h1 class="text-5xl font-bold text-center mb-16 neon-text glitch" data-text="ESTABLISH CONNECTION">ESTABLISH
+            CONNECTION</h1>
+
+        <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+            <!-- Contact Info -->
+            <div class="cyber-card animate-on-scroll" data-tilt>
+                <h2 class="text-3xl font-bold mb-6 text-green-500 border-b border-green-500 pb-2">TRANSMISSION DATA</h2>
+                <p class="text-gray-400 mb-8 leading-relaxed">
+                    {{ settings.contact_page_text if settings and settings.contact_page_text else "Opening a secure
+                    channel. Have
+                    an opportunity or project? My neural network is always listening for new challenges in AI/ML and
+                    Security." }}
+                </p>
+
+                <div class="space-y-6">
+                    {% if settings and settings.email %}
+                    <div class="flex items-center group">
+                        <div
+                            class="w-12 h-12 flex items-center justify-center border border-green-500 rounded bg-black mr-4 text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
+                            <i class="fas fa-envelope text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Protocol</div>
+                            <div class="text-gray-300 font-mono">{{ settings.email }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="flex items-center group">
+                        <div
+                            class="w-12 h-12 flex items-center justify-center border border-green-500 rounded bg-black mr-4 text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
+                            <i class="fas fa-map-marker-alt text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Coordinates</div>
+                            <div class="text-gray-300 font-mono">Chennai, India</div>
+                        </div>
+                    </div>
+
+                    {% if settings and settings.whatsapp_url %}
+                    <div class="flex items-center group">
+                        <div
+                            class="w-12 h-12 flex items-center justify-center border border-green-500 rounded bg-black mr-4 text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Fast-Link</div>
+                            <a href="{{ settings.whatsapp_url }}" target="_blank"
+                                class="text-gray-300 font-mono hover:text-green-500 hover:underline">Message via
+                                WhatsApp</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="cyber-card animate-on-scroll relative">
+                <!-- Scanline effect for card -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-transparent to-green-900 opacity-10 pointer-events-none">
+                </div>
+
+                <h2 class="text-2xl font-bold mb-6 text-green-500">INITIATE PING</h2>
+
+                <form method="POST" action="{{ url_for('public.contact') }}" class="space-y-4 relative z-10">
+                    {{ form.hidden_tag() }}
+
+                    <div>
+                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Sender ID
+                            Object [Name]</label>
+                        {{ form.name(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
+                        p-3 font-mono outline-none transition placeholder-gray-700", placeholder="Enter Name") }}
+                        {% if form.name.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ form.name.errors[0] }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Reply-To
+                            Address Object [Email]</label>
+                        {{ form.email(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
+                        p-3 font-mono outline-none transition placeholder-gray-700", placeholder="Enter Email") }}
+                        {% if form.email.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ form.email.errors[0] }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Transmission
+                            Subject</label>
+                        {{ form.subject(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
+                        p-3 font-mono outline-none transition placeholder-gray-700", placeholder="Reason for Access") }}
+                        {% if form.subject.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ form.subject.errors[0] }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Encrypted
+                            Payload [Message]</label>
+                        {{ form.message(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
+                        p-3 font-mono outline-none transition h-32 resize-none placeholder-gray-700",
+                        placeholder="Transmit your request here...") }}
+                        {% if form.message.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ form.message.errors[0] }}</p>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit"
+                        class="w-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-bold py-3 uppercase tracking-widest transition group">
+                        <i class="fas fa-satellite-dish mr-2 group-hover:animate-ping"></i> Transmit Packet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Madhesh Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-black text-white font-mono min-h-screen flex items-center justify-center p-4">
+    <!-- Background Elements -->
+    <div class="cyber-grid"></div>
+    <div class="scanlines"></div>
+    
+    <div class="max-w-md w-full">
+        <div class="cyber-card p-8">
+            <div class="text-center mb-8">
+                <h1 class="glitch text-3xl mb-2" data-text="ADMIN LOGIN">ADMIN LOGIN</h1>
+                <p class="text-gray-400">Enter your credentials to access the dashboard</p>
+            </div>
+            
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-6">
+                    <label class="block text-green-500 mb-2">
+                        <i class="fas fa-user mr-2"></i>Username
+                    </label>
+                    {{ form.username(class="w-full bg-black border-2 border-green-500 text-white px-4 py-3 focus:outline-none focus:neon-border", placeholder="Enter username", autocomplete="off") }}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-green-500 mb-2">
+                        <i class="fas fa-lock mr-2"></i>Password
+                    </label>
+                    {{ form.password(class="w-full bg-black border-2 border-green-500 text-white px-4 py-3 focus:outline-none focus:neon-border", placeholder="Enter password") }}
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="mb-6 flex items-center">
+                    {{ form.remember_me(class="mr-2 accent-green-500") }}
+                    <label class="text-gray-400">Remember me on this device</label>
+                </div>
+                
+                <button type="submit" class="w-full bg-green-500 text-black font-bold py-3 px-4 hover:bg-green-400 transition neon-border">
+                    <i class="fas fa-sign-in-alt mr-2"></i>LOGIN
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <a href="{{ url_for('public.index') }}" class="text-gray-500 hover:text-green-500 transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Portfolio
+                </a>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-gray-800 text-center">
+                <p class="text-xs text-gray-600">
+                    Unauthorized access is prohibited. All activities are logged.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Madhesh{% endblock %}
+
+{% block content %}
+<section class="py-32 min-h-screen">
+    <div class="container mx-auto px-6 max-w-4xl">
+        <a href="{{ url_for('public.projects') }}"
+            class="inline-flex items-center text-green-500 hover:text-white font-mono mb-8 group transition">
+            <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> RETURN TO MAIN_GRID
+        </a>
+
+        <div class="cyber-card p-6 md:p-12 animate-on-scroll">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 neon-text glitch" data-text="{{ project.title }}">{{
+                project.title }}</h1>
+
+            <div
+                class="flex items-center space-x-4 mb-8 text-green-500 font-mono text-sm border-b border-gray-800 pb-6">
+                <span><i class="fas fa-calendar-alt mr-2"></i> {{ project.completed_date.strftime('%Y-%m-%d') if
+                    project.completed_date else 'STATUS: ACTIVE' }}</span>
+                <span>|</span>
+                <span><i class="fas fa-folder-open mr-2"></i> {{ project.category }}</span>
+            </div>
+
+            {% if project.get_images_list() %}
+            <div class="relative w-full max-w-4xl mx-auto mb-10 group">
+                <!-- Carousel Container -->
+                <div id="project-carousel"
+                    class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar rounded shadow-[0_0_20px_rgba(0,255,0,0.2)] border border-green-500">
+                    {% for image_filename in project.get_images_list() %}
+                    <div class="w-full flex-shrink-0 snap-center relative">
+                        <img src="{{ url_for('static', filename='uploads/projects/' + image_filename) }}"
+                            alt="{{ project.title }}" class="w-full object-cover max-h-[500px]">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60">
+                        </div>
+                        <div
+                            class="absolute top-4 right-4 bg-black bg-opacity-70 text-green-500 text-xs font-mono px-3 py-1 rounded-full border border-green-500">
+                            {{ loop.index }} / {{ loop.length }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if project.get_images_list()|length > 1 %}
+                <!-- Navigation Arrows -->
+                <button
+                    onclick="document.getElementById('project-carousel').scrollBy({ left: -document.getElementById('project-carousel').clientWidth, behavior: 'smooth' })"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-80 text-green-500 p-4 rounded-full border border-green-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-green-500 hover:text-black focus:outline-none z-10 hidden md:block">
+                    <i class="fas fa-chevron-left text-xl"></i>
+                </button>
+                <button
+                    onclick="document.getElementById('project-carousel').scrollBy({ left: document.getElementById('project-carousel').clientWidth, behavior: 'smooth' })"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-80 text-green-500 p-4 rounded-full border border-green-500 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-green-500 hover:text-black focus:outline-none z-10 hidden md:block">
+                    <i class="fas fa-chevron-right text-xl"></i>
+                </button>
+                <!-- Pagination Dots -->
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-10">
+                    {% for image_filename in project.get_images_list() %}
+                    <div
+                        class="w-3 h-3 rounded-full border border-green-500 indicator-dot-proj {% if loop.first %}bg-green-500 shadow-[0_0_10px_#0f0]{% else %}bg-black bg-opacity-50{% endif %} transition-all duration-300">
+                    </div>
+                    {% endfor %}
+                </div>
+                <script>
+                    const projCarousel = document.getElementById('project-carousel');
+                    const projDots = document.querySelectorAll('.indicator-dot-proj');
+                    if (projCarousel && projDots.length > 0) {
+                        projCarousel.addEventListener('scroll', () => {
+                            let scrollLeft = projCarousel.scrollLeft;
+                            let width = projCarousel.clientWidth;
+                            let activeIndex = Math.round(scrollLeft / width);
+                            projDots.forEach((dot, index) => {
+                                if (index === activeIndex) {
+                                    dot.classList.add('bg-green-500', 'shadow-[0_0_10px_#0f0]');
+                                    dot.classList.remove('bg-black', 'bg-opacity-50');
+                                } else {
+                                    dot.classList.remove('bg-green-500', 'shadow-[0_0_10px_#0f0]');
+                                    dot.classList.add('bg-black', 'bg-opacity-50');
+                                }
+                            });
+                        });
+                    }
+                </script>
+                {% endif %}
+                <style>
+                    /* Hide scrollbar for smooth carousel UI */
+                    .hide-scrollbar::-webkit-scrollbar {
+                        display: none;
+                    }
+
+                    .hide-scrollbar {
+                        -ms-overflow-style: none;
+                        scrollbar-width: none;
+                    }
+                </style>
+            </div>
+            {% endif %}
+
+            <div
+                class="prose prose-invert prose-green max-w-none mb-12 space-y-4 text-gray-300 leading-relaxed text-lg">
+                {{ (project.long_description or project.description) | safe }}
+            </div>
+
+            {% if project.get_tech_list() %}
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-4 text-white"><i class="fas fa-microchip text-green-500 mr-2"></i>
+                    DEPENDENCIES & TECHNOLOGIES</h3>
+                <div class="flex flex-wrap gap-3">
+                    {% for tech in project.get_tech_list() %}
+                    <span
+                        class="px-3 py-1 bg-green-900 border border-green-500 text-green-400 rounded-sm font-mono text-sm shadow-[0_0_5px_rgba(0,255,0,0.5)]">{{
+                        tech }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-800 pt-8 mt-12">
+                {% if project.github_link %}
+                <a href="{{ project.github_link }}" target="_blank"
+                    class="flex-1 flex justify-center items-center px-6 py-4 border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black transition uppercase font-bold tracking-widest group">
+                    <i class="fab fa-github text-xl mr-3 group-hover:animate-bounce"></i> Source Code
+                </a>
+                {% endif %}
+                {% if project.demo_link %}
+                <a href="{{ project.demo_link }}" target="_blank"
+                    class="flex-1 flex justify-center items-center px-6 py-4 bg-green-500 text-black hover:bg-green-400 transition uppercase font-bold tracking-widest shadow-[0_0_15px_rgba(0,255,0,0.4)] group">
+                    <i class="fas fa-external-link-alt text-xl mr-3 group-hover:animate-pulse"></i> Launch Demo
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

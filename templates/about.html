@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}About - Madhesh Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <h1 class="text-4xl font-bold mb-12 neon-text text-center">About Me</h1>
+
+        <div class="grid md:grid-cols-2 gap-12 mb-16">
+            <!-- Profile Section -->
+            <div class="animate-on-scroll">
+                {% if settings.profile_image %}
+                <div class="cyber-card p-0 overflow-hidden h-96 mb-6">
+                    <img src="{{ url_for('static', filename='uploads/profile/' + settings.profile_image) }}"
+                        alt="Madhesh" class="w-full h-full object-cover">
+                </div>
+                {% else %}
+                <div class="cyber-card flex items-center justify-center h-96 mb-6">
+                    <div class="text-center">
+                        <i class="fas fa-user-circle text-8xl text-green-500"></i>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Social Links -->
+                <div class="cyber-card">
+                    <h3 class="text-2xl font-bold mb-6 neon-text">Connect With Me</h3>
+                    <div class="space-y-4">
+                        {% if settings.email %}
+                        <a href="mailto:{{ settings.email }}"
+                            class="flex items-center text-gray-300 hover:text-green-500 transition">
+                            <i class="fas fa-envelope w-6"></i>
+                            <span class="ml-3">{{ settings.email }}</span>
+                        </a>
+                        {% endif %}
+                        {% if settings.github_url %}
+                        <a href="{{ settings.github_url }}" target="_blank"
+                            class="flex items-center text-gray-300 hover:text-green-500 transition">
+                            <i class="fab fa-github w-6"></i>
+                            <span class="ml-3">GitHub</span>
+                        </a>
+                        {% endif %}
+                        {% if settings.linkedin_url %}
+                        <a href="{{ settings.linkedin_url }}" target="_blank"
+                            class="flex items-center text-gray-300 hover:text-green-500 transition">
+                            <i class="fab fa-linkedin w-6"></i>
+                            <span class="ml-3">LinkedIn</span>
+                        </a>
+                        {% endif %}
+                        {% if settings.twitter_url %}
+                        <a href="{{ settings.twitter_url }}" target="_blank"
+                            class="flex items-center text-gray-300 hover:text-green-500 transition">
+                            <i class="fab fa-twitter w-6"></i>
+                            <span class="ml-3">Twitter</span>
+                        </a>
+                        {% endif %}
+                        {% if settings.resume_path %}
+                        <a href="{{ url_for('static', filename='uploads/resume/' + settings.resume_path) }}"
+                            target="_blank" class="flex items-center text-gray-300 hover:text-green-500 transition">
+                            <i class="fas fa-file-pdf w-6"></i>
+                            <span class="ml-3">Download Resume</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Text -->
+            <div class="animate-on-scroll">
+                <div class="cyber-card">
+                    <h2 class="text-2xl font-bold mb-6 neon-text">Who I Am</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-6">{{ settings.bio }}</p>
+
+                    <h3 class="text-xl font-bold mb-4 text-green-400">What I Do</h3>
+                    <ul class="space-y-3 text-gray-300 mb-8">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                            <span>Build responsive and interactive web applications</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                            <span>Develop secure backend systems with Python & Flask</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                            <span>Design cybersecurity solutions and implementations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-3"></i>
+                            <span>Work with AI/ML technologies for innovative solutions</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resume PDF View Section -->
+        {% if settings and settings.resume_path %}
+        <div class="py-12 animate-on-scroll">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-4xl font-bold neon-text">Decrypted Curriculum Vitae [Resume]</h2>
+                <a href="{{ url_for('static', filename='uploads/resume/' + settings.resume_path) }}" download
+                    class="px-6 py-2 bg-green-500 text-black font-bold uppercase tracking-widest hover:bg-green-400 transition shadow-[0_0_15px_rgba(0,255,0,0.5)]"><i
+                        class="fas fa-download mr-2"></i> Download Local</a>
+            </div>
+
+            <div class="cyber-card p-2 h-[800px] border-2 border-green-500 rounded relative overflow-hidden group">
+                <div class="absolute inset-x-0 top-0 h-1 bg-green-500 animate-pulse pointer-events-none z-10"></div>
+
+                <iframe src="{{ url_for('static', filename='uploads/resume/' + settings.resume_path) }}"
+                    class="w-full h-full border-none opacity-90 group-hover:opacity-100 transition-opacity"
+                    title="Resume PDF View"></iframe>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Skills Section -->
+        <div class="py-12">
+            <h2 class="text-4xl font-bold mb-12 text-center neon-text">Technical Skills</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% set categories = {} %}
+                {% for skill in skills %}
+                {% if skill.category not in categories %}
+                {% set _ = categories.update({skill.category: []}) %}
+                {% endif %}
+                {% set _ = categories[skill.category].append(skill) %}
+                {% endfor %}
+
+                {% for category, category_skills in categories.items() %}
+                <div class="cyber-card animate-on-scroll">
+                    <h3 class="text-xl font-bold mb-6 neon-text">{{ category|title }}</h3>
+                    <div class="space-y-4">
+                        {% for skill in category_skills %}
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-300">{{ skill.name }}</span>
+                                <span class="text-green-500">{{ skill.level }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-green-500 to-cyan-500 h-full rounded-full"
+                                    style="width: {{ skill.level }}%; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
