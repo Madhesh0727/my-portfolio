@@ -130,15 +130,7 @@
         <div class="py-12">
             <h2 class="text-4xl font-bold mb-12 text-center neon-text">Technical Skills</h2>
             <div class="grid md:grid-cols-3 gap-8">
-                {% set categories = {} %}
-                {% for skill in skills %}
-                {% if skill.category not in categories %}
-                {% set _ = categories.update({skill.category: []}) %}
-                {% endif %}
-                {% set _ = categories[skill.category].append(skill) %}
-                {% endfor %}
-
-                {% for category, category_skills in categories.items() %}
+                {% for category, category_skills in skills_by_category.items() %}
                 <div class="cyber-card animate-on-scroll">
                     <h3 class="text-xl font-bold mb-6 neon-text">{{ category|title }}</h3>
                     <div class="space-y-4">
