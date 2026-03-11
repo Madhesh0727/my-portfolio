@@ -10,7 +10,13 @@ class Config:
     
     # Database
     basedir = os.path.abspath(os.path.dirname(__file__))
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+    db_url = os.environ.get('DATABASE_URL')
+    
+    # Fix for Render's postgres:// vs postgresql:// protocol
+    if db_url and db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+        
+    SQLALCHEMY_DATABASE_URI = db_url or \
         'sqlite:///' + os.path.join(basedir, 'portfolio.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
