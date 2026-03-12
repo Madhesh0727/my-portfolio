@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
-from models import Project, BlogPost, Skill, Settings, Message
+from models import Project, BlogPost, Skill, Settings, Message, Education, Experience, Certification
 from forms.project_forms import ProjectForm
 from forms.blog_forms import BlogPostForm
 from forms.skill_forms import SkillForm
 from forms.settings_forms import SettingsForm
+from forms.education_forms import EducationForm
+from forms.experience_forms import ExperienceForm
+from forms.certification_forms import CertificationForm
 from app import db
 from utils.decorators import admin_required
 from utils.helpers import save_file, delete_file, create_slug
@@ -272,6 +275,188 @@ def delete_skill(id):
     flash('Skill deleted successfully!', 'success')
     return redirect(url_for('admin.skills'))
 
+# ========== EDUCATION MANAGEMENT ==========
+@admin_bp.route('/education')
+@login_required
+@admin_required
+def education():
+    education_list = Education.query.order_by(Education.display_order).all()
+    return render_template('admin/education.html', education_list=education_list)
+
+@admin_bp.route('/education/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def new_education():
+    form = EducationForm()
+    
+    if form.validate_on_submit():
+        education_item = Education(
+            degree=form.degree.data,
+            college=form.college.data,
+            start_date=form.start_date.data,
+            end_date=form.end_date.data,
+            cgpa=form.cgpa.data,
+            description=form.description.data,
+            display_order=form.display_order.data
+        )
+        db.session.add(education_item)
+        db.session.commit()
+        flash('Education added successfully!', 'success')
+        return redirect(url_for('admin.education'))
+    
+    return render_template('admin/education_form.html', form=form, title='New Education')
+
+@admin_bp.route('/education/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_education(id):
+    education_item = Education.query.get_or_404(id)
+    form = EducationForm(obj=education_item)
+    
+    if form.validate_on_submit():
+        education_item.degree = form.degree.data
+        education_item.college = form.college.data
+        education_item.start_date = form.start_date.data
+        education_item.end_date = form.end_date.data
+        education_item.cgpa = form.cgpa.data
+        education_item.description = form.description.data
+        education_item.display_order = form.display_order.data
+        db.session.commit()
+        flash('Education updated successfully!', 'success')
+        return redirect(url_for('admin.education'))
+    
+    return render_template('admin/education_form.html', form=form, education=education_item, title='Edit Education')
+
+@admin_bp.route('/education/delete/<int:id>')
+@login_required
+@admin_required
+def delete_education(id):
+    education_item = Education.query.get_or_404(id)
+    db.session.delete(education_item)
+    db.session.commit()
+    flash('Education deleted successfully!', 'success')
+    return redirect(url_for('admin.education'))
+
+# ========== EXPERIENCE MANAGEMENT ==========
+@admin_bp.route('/experience')
+@login_required
+@admin_required
+def experience():
+    experience_list = Experience.query.order_by(Experience.display_order).all()
+    return render_template('admin/experience.html', experience_list=experience_list)
+
+@admin_bp.route('/experience/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def new_experience():
+    form = ExperienceForm()
+    
+    if form.validate_on_submit():
+        exp_item = Experience(
+            role=form.role.data,
+            company=form.company.data,
+            start_date=form.start_date.data,
+            end_date=form.end_date.data,
+            description=form.description.data,
+            display_order=form.display_order.data
+        )
+        db.session.add(exp_item)
+        db.session.commit()
+        flash('Experience added successfully!', 'success')
+        return redirect(url_for('admin.experience'))
+    
+    return render_template('admin/experience_form.html', form=form, title='New Experience')
+
+@admin_bp.route('/experience/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_experience(id):
+    exp_item = Experience.query.get_or_404(id)
+    form = ExperienceForm(obj=exp_item)
+    
+    if form.validate_on_submit():
+        exp_item.role = form.role.data
+        exp_item.company = form.company.data
+        exp_item.start_date = form.start_date.data
+        exp_item.end_date = form.end_date.data
+        exp_item.description = form.description.data
+        exp_item.display_order = form.display_order.data
+        db.session.commit()
+        flash('Experience updated successfully!', 'success')
+        return redirect(url_for('admin.experience'))
+    
+    return render_template('admin/experience_form.html', form=form, experience=exp_item, title='Edit Experience')
+
+@admin_bp.route('/experience/delete/<int:id>')
+@login_required
+@admin_required
+def delete_experience(id):
+    exp_item = Experience.query.get_or_404(id)
+    db.session.delete(exp_item)
+    db.session.commit()
+    flash('Experience deleted successfully!', 'success')
+    return redirect(url_for('admin.experience'))
+
+# ========== CERTIFICATION MANAGEMENT ==========
+@admin_bp.route('/certifications')
+@login_required
+@admin_required
+def certifications():
+    cert_list = Certification.query.order_by(Certification.display_order).all()
+    return render_template('admin/certifications.html', cert_list=cert_list)
+
+@admin_bp.route('/certifications/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def new_certification():
+    form = CertificationForm()
+    
+    if form.validate_on_submit():
+        cert_item = Certification(
+            name=form.name.data,
+            issuer=form.issuer.data,
+            date_earned=form.date_earned.data,
+            url=form.url.data,
+            description=form.description.data,
+            display_order=form.display_order.data
+        )
+        db.session.add(cert_item)
+        db.session.commit()
+        flash('Certification added successfully!', 'success')
+        return redirect(url_for('admin.certifications'))
+    
+    return render_template('admin/certification_form.html', form=form, title='New Certification')
+
+@admin_bp.route('/certifications/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_certification(id):
+    cert_item = Certification.query.get_or_404(id)
+    form = CertificationForm(obj=cert_item)
+    
+    if form.validate_on_submit():
+        cert_item.name = form.name.data
+        cert_item.issuer = form.issuer.data
+        cert_item.date_earned = form.date_earned.data
+        cert_item.url = form.url.data
+        cert_item.description = form.description.data
+        cert_item.display_order = form.display_order.data
+        db.session.commit()
+        flash('Certification updated successfully!', 'success')
+        return redirect(url_for('admin.certifications'))
+    
+    return render_template('admin/certification_form.html', form=form, certification=cert_item, title='Edit Certification')
+
+@admin_bp.route('/certifications/delete/<int:id>')
+@login_required
+@admin_required
+def delete_certification(id):
+    cert_item = Certification.query.get_or_404(id)
+    db.session.delete(cert_item)
+    db.session.commit()
+    flash('Certification deleted successfully!', 'success')
+    return redirect(url_for('admin.certifications'))
+
 # ========== SETTINGS MANAGEMENT ==========
 @admin_bp.route('/settings', methods=['GET', 'POST'])
 @login_required
@@ -304,6 +489,7 @@ def settings():
         settings.email = form.email.data
         settings.location = form.location.data
         settings.specialty = form.specialty.data
+        settings.resume_template = form.resume_template.data
         
         if form.profile_image.data and hasattr(form.profile_image.data, 'filename') and form.profile_image.data.filename:
             if settings.profile_image:

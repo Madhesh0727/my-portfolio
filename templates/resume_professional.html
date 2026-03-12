@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}Resume - Madhesh Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-20 min-h-screen bg-gray-100 text-gray-800 font-sans">
+    <div class="container mx-auto px-4 max-w-4xl">
+        {% if not is_download %}
+        <div class="flex justify-between items-center mb-8 print:hidden bg-white p-4 shadow-sm border border-gray-200">
+            <h1 class="text-xl md:text-2xl font-semibold text-gray-700">PROFESSIONAL RESUME</h1>
+            <div class="flex items-center gap-4">
+                <div class="relative" id="download-dropdown">
+                    <button onclick="toggleDropdown()" 
+                        class="px-5 py-2 bg-gray-800 text-white rounded font-medium hover:bg-gray-900 transition flex items-center shadow-sm">
+                        <i class="fas fa-download mr-2 text-sm"></i> DOWNLOAD <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-xl rounded z-50 overflow-hidden">
+                        <a href="javascript:void(0)" onclick="window.print(); toggleDropdown()" 
+                           class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100 transition-colors font-medium">
+                           <i class="fas fa-file-pdf mr-2 text-gray-600"></i> PDF Document
+                        </a>
+                        <a href="{{ url_for('public.download_html_resume') }}" 
+                           class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100 transition-colors font-medium">
+                           <i class="fas fa-file-code mr-2 text-gray-600"></i> HTML Format
+                        </a>
+                        <a href="{{ url_for('public.download_doc_resume') }}" 
+                           class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors font-medium">
+                           <i class="fas fa-file-word mr-2 text-gray-600"></i> Word (DOC)
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('public.index') }}"
+                    class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded transition font-bold text-sm uppercase">
+                    Back
+                </a>
+            </div>
+        </div>
+        <script>
+            function toggleDropdown() {
+                const menu = document.getElementById('dropdown-menu');
+                menu.classList.toggle('hidden');
+            }
+            window.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('download-dropdown');
+                const menu = document.getElementById('dropdown-menu');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        </script>
+        {% endif %}
+
+        <!-- Professional Resume Body -->
+        <div
+            class="bg-white shadow-md p-10 md:p-14 print:p-0 print:shadow-none min-h-[1056px] mx-auto border-t-8 border-gray-800 print:border-t-0">
+
+            <header class="mb-10 text-center">
+                <h1 class="text-4xl font-bold text-gray-900 uppercase tracking-wider mb-2">
+                    {{ settings.owner_name if settings and settings.owner_name else 'Madhesh Rasu A S' }}
+                </h1>
+                <h2 class="text-xl text-gray-600 mb-4 font-light">
+                    {{ settings.tagline if settings else 'AI/ML Engineer & Cybersecurity Researcher' }}
+                </h2>
+                <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+                    {% if settings.email %}
+                    <span><i class="fas fa-envelope mr-1 text-gray-400"></i>{{ settings.email }}</span>
+                    {% endif %}
+                    {% if settings.location %}
+                    <span><i class="fas fa-map-marker-alt mr-1 text-gray-400"></i>{{ settings.location }}</span>
+                    {% endif %}
+                    {% if settings.linkedin_url %}
+                    <span><i class="fab fa-linkedin mr-1 text-gray-400"></i>{{ settings.linkedin_url.split('//')[-1]
+                        }}</span>
+                    {% endif %}
+                    {% if settings.github_url %}
+                    <span><i class="fab fa-github mr-1 text-gray-400"></i>{{ settings.github_url.split('//')[-1]
+                        }}</span>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="space-y-8">
+
+                {% if settings.bio %}
+                <section>
+                    <h3
+                        class="text-lg font-bold text-gray-900 uppercase border-b-2 border-gray-800 pb-1 mb-4 tracking-widest">
+                        Professional Summary</h3>
+                    <p class="text-gray-700 leading-relaxed text-sm text-justify">{{ settings.bio }}</p>
+                </section>
+                {% endif %}
+
+                <!-- Education -->
+                {% if education_list %}
+                <section>
+                    <h3
+                        class="text-lg font-bold text-gray-900 uppercase border-b-2 border-gray-800 pb-1 mb-4 tracking-widest">
+                        Education</h3>
+                    <div class="space-y-5">
+                        {% for edu in education_list %}
+                        <div>
+                            <div class="flex justify-between items-baseline font-bold text-gray-900 mb-1">
+                                <h4>{{ edu.degree }}</h4>
+                                <span class="text-sm font-normal text-gray-600">{{ edu.start_date }} - {{ edu.end_date
+                                    }}</span>
+                            </div>
+                            <h5 class="text-gray-700 font-medium">
+                                {{ edu.college }}
+                                {% if edu.cgpa %}
+                                <span class="ml-2 pl-2 border-l border-gray-400 text-gray-500 text-sm">{% if '%' in
+                                    edu.cgpa %}Percentage: {{ edu.cgpa }}{% else %}CGPA: {{ edu.cgpa }}{% endif
+                                    %}</span>
+                                {% endif %}
+                            </h5>
+                            {% if edu.description %}
+                            <p class="text-sm text-gray-600 mt-1 whitespace-pre-wrap break-words">{{ edu.description }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Work Experience -->
+                {% if experience_list %}
+                <section>
+                    <h3
+                        class="text-lg font-bold text-gray-900 uppercase border-b-2 border-gray-800 pb-1 mb-4 tracking-widest">
+                        Work Experience</h3>
+                    <div class="space-y-6">
+                        {% for exp in experience_list %}
+                        <div>
+                            <div class="flex justify-between items-baseline font-bold text-gray-900 mb-1">
+                                <h4>{{ exp.role }}</h4>
+                                <span class="text-sm font-normal text-gray-600">{{ exp.start_date }} - {{ exp.end_date
+                                    }}</span>
+                            </div>
+                            <h5 class="text-gray-700 font-medium mb-2">{{ exp.company }}</h5>
+                            {% if exp.description %}
+                            <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words">{{
+                                exp.description }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Projects -->
+                {% if projects_list %}
+                <section>
+                    <h3
+                        class="text-lg font-bold text-gray-900 uppercase border-b-2 border-gray-800 pb-1 mb-4 tracking-widest">
+                        Projects</h3>
+                    <div class="space-y-6">
+                        {% for project in projects_list %}
+                        <div>
+                            <div class="flex justify-between items-baseline font-bold text-gray-900 mb-1">
+                                <h4>{{ project.title }}</h4>
+                                {% if project.github_link or project.demo_link %}
+                                <span class="text-sm font-normal text-gray-600">
+                                    {% if project.demo_link %}<a href="{{ project.demo_link }}"
+                                        class="hover:underline">Demo</a>{% endif %}
+                                    {% if project.demo_link and project.github_link %} | {% endif %}
+                                    {% if project.github_link %}<a href="{{ project.github_link }}"
+                                        class="hover:underline">GitHub</a>{% endif %}
+                                </span>
+                                {% endif %}
+                            </div>
+                            {% if project.tech_stack %}
+                            <h5 class="text-gray-700 font-medium mb-2 italic text-sm">{{ project.tech_stack }}</h5>
+                            {% endif %}
+                            {% if project.description %}
+                            <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap break-words">{{
+                                project.description }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 print:grid-cols-2">
+                    {% if cert_list %}
+                    <section>
+                        <h3
+                            class="text-lg font-bold text-gray-900 uppercase border-b-2 border-gray-800 pb-1 mb-4 tracking-widest">
+                            Certifications</h3>
+                        <div class="space-y-4">
+                            {% for cert in cert_list %}
+                            <div>
+                                <h4 class="font-bold text-gray-900">{{ cert.name }}</h4>
+                                <div class="text-sm text-gray-600">
+                                    {{ cert.issuer }} <span class="mx-1">•</span> {{ cert.date_earned }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    <section>
+                        <h3
+                            class="text-lg font-bold text-gray-900 uppercase border-b-2 border-gray-800 pb-1 mb-4 tracking-widest">
+                            Technical Skills</h3>
+                        <div class="space-y-3">
+                            {% for category, cat_skills in skills_by_category.items() %}
+                            <div class="text-sm">
+                                <span class="font-bold text-gray-800">{{ category|replace('-', ' ')|title }}:</span>
+                                <span class="text-gray-600">
+                                    {% set skill_names = [] %}
+                                    {% for skill in cat_skills %}
+                                    {% set _ = skill_names.append(skill.name) %}
+                                    {% endfor %}
+                                    {{ skill_names|join(', ') }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    nav,
+    .scanlines,
+    .cyber-grid {
+        display: none !important;
+    }
+
+    body {
+        background-color: #f3f4f6;
+        color: #1f2937;
+    }
+
+    @media print {
+        body {
+            background-color: white !important;
+            font-size: 10pt;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .print\:hidden {
+            display: none !important;
+        }
+
+        @page {
+            margin: 1in;
+        }
+    }
+</style>
+{% endblock %}

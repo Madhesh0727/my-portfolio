@@ -25,7 +25,9 @@ class NeuralNetworkBackground {
     }
     
     createNetwork() {
-        const nodeCount = 50;
+        const isMobile = window.innerWidth < 768;
+        const nodeCount = isMobile ? 25 : 50;
+        const maxDistance = isMobile ? 10 : 15;
         const geometry = new THREE.SphereGeometry(0.3, 8, 8);
         
         for (let i = 0; i < nodeCount; i++) {
@@ -66,13 +68,14 @@ class NeuralNetworkBackground {
             for (let j = i + 1; j < this.nodes.length; j++) {
                 const distance = this.nodes[i].position.distanceTo(this.nodes[j].position);
                 
-                if (distance < 15) {
+                if (distance < maxDistance) {
                     const points = [
-                        this.nodes[i].position.clone(),
-                        this.nodes[j].position.clone()
+                        this.nodes[i].position.x, this.nodes[i].position.y, this.nodes[i].position.z,
+                        this.nodes[j].position.x, this.nodes[j].position.y, this.nodes[j].position.z
                     ];
                     
-                    const connectionGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                    const connectionGeometry = new THREE.BufferGeometry();
+                    connectionGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
                     const line = new THREE.Line(connectionGeometry, connectionMaterial);
                     
                     line.userData = {
@@ -111,14 +114,16 @@ class NeuralNetworkBackground {
         });
         
         this.connections.forEach(conn => {
-            const points = [
-                conn.userData.node1.position.clone(),
-                conn.userData.node2.position.clone()
-            ];
-            conn.geometry.dispose();
-            conn.geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const pos = conn.geometry.attributes.position;
+            pos.array[0] = conn.userData.node1.position.x;
+            pos.array[1] = conn.userData.node1.position.y;
+            pos.array[2] = conn.userData.node1.position.z;
+            pos.array[3] = conn.userData.node2.position.x;
+            pos.array[4] = conn.userData.node2.position.y;
+            pos.array[5] = conn.userData.node2.position.z;
+            pos.needsUpdate = true;
             
-            const distance = points[0].distanceTo(points[1]);
+            const distance = conn.userData.node1.position.distanceTo(conn.userData.node2.position);
             const opacity = Math.max(0, 0.3 - distance / 100);
             conn.material.opacity = opacity;
         });

@@ -34,23 +34,27 @@ class AIDataStream {
     }
     
     createParticles() {
-        for (let i = 0; i < 50; i++) {
+        const isMobile = window.innerWidth < 768;
+        const particleCount = isMobile ? 15 : 30;
+        const packetCount = isMobile ? 3 : 5;
+        
+        for (let i = 0; i < particleCount; i++) {
             this.particles.push({
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
                 size: Math.random() * 2 + 1,
-                speedX: (Math.random() - 0.5) * 0.5,
-                speedY: (Math.random() - 0.5) * 0.5
+                speedX: (Math.random() - 0.5) * 0.3,
+                speedY: (Math.random() - 0.5) * 0.3
             });
         }
         
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < packetCount; i++) {
             this.dataPackets.push({
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
-                text: this.generateBinaryString(16),
-                speed: Math.random() * 2 + 1,
-                opacity: Math.random() * 0.5 + 0.2
+                text: this.generateBinaryString(12),
+                speed: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.4 + 0.1
             });
         }
     }
@@ -64,12 +68,14 @@ class AIDataStream {
     }
     
     drawMatrixRain() {
+        const isMobile = window.innerWidth < 768;
+        const columnCount = isMobile ? 10 : 20;
         const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
         
         this.ctx.font = '14px "Share Tech Mono", monospace';
         this.ctx.fillStyle = '#0f0';
         
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < columnCount; i++) {
             const x = (i * 50) % this.canvas.width;
             const y = (Date.now() * 0.01 + i * 50) % (this.canvas.height + 50) - 50;
             
@@ -88,8 +94,8 @@ class AIDataStream {
                 const dy = this.particles[i].y - this.particles[j].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 100) {
-                    this.ctx.globalAlpha = 0.1 * (1 - distance / 100);
+                if (distance < 70) {
+                    this.ctx.globalAlpha = 0.1 * (1 - distance / 70);
                     this.ctx.beginPath();
                     this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
                     this.ctx.lineTo(this.particles[j].x, this.particles[j].y);

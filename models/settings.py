@@ -15,6 +15,7 @@ class Settings(db.Model):
     profile_image = db.Column(db.String(200), nullable=True)
     theme_color = db.Column(db.String(7), default='#00ff00')
     resume_path = db.Column(db.String(200), nullable=True)
+    resume_template = db.Column(db.String(50), default='resume_default.html')
     
     # Social links
     github_url = db.Column(db.String(200), default='https://github.com/madhesh')

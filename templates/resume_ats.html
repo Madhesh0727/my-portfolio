@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Resume - Madhesh Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-10 min-h-screen bg-white text-black font-sans">
+    <div class="container mx-auto px-4 max-w-4xl">
+        {% if not is_download %}
+        <div class="flex justify-between items-center mb-8 print:hidden bg-gray-100 p-4 border border-gray-300">
+            <h1 class="text-xl font-bold uppercase tracking-tight">ATS OPTIMIZED RESUME</h1>
+            <div class="flex items-center gap-4">
+                <div class="relative" id="download-dropdown">
+                    <button onclick="toggleDropdown()" 
+                        class="px-5 py-2 bg-black text-white font-bold hover:bg-gray-800 transition flex items-center">
+                        <i class="fas fa-download mr-2 text-sm"></i> DOWNLOAD <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-xl z-50 overflow-hidden">
+                        <a href="javascript:void(0)" onclick="window.print(); toggleDropdown()" 
+                           class="block px-4 py-3 text-sm text-black hover:bg-gray-100 border-b border-gray-100">
+                           <i class="fas fa-file-pdf mr-2"></i> PDF Document
+                        </a>
+                        <a href="{{ url_for('public.download_html_resume') }}" 
+                           class="block px-4 py-3 text-sm text-black hover:bg-gray-100 border-b border-gray-100">
+                           <i class="fas fa-file-code mr-2"></i> HTML Format
+                        </a>
+                        <a href="{{ url_for('public.download_doc_resume') }}" 
+                           class="block px-4 py-3 text-sm text-black hover:bg-gray-100">
+                           <i class="fas fa-file-word mr-2"></i> Word (DOC)
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('public.index') }}" class="text-gray-500 hover:text-black transition font-bold text-sm uppercase">
+                    Back
+                </a>
+            </div>
+        </div>
+        <script>
+            function toggleDropdown() {
+                const menu = document.getElementById('dropdown-menu');
+                menu.classList.toggle('hidden');
+            }
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('download-dropdown');
+                const menu = document.getElementById('dropdown-menu');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        </script>
+        {% endif %}
+
+        <!-- ATS Resume Body -->
+        <div class="w-full p-8 md:p-12 print:p-0 mx-auto max-w-3xl">
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold uppercase mb-2">{{ settings.owner_name if settings and settings.owner_name
+                    else 'Madhesh Rasu A S' }}</h1>
+                <div class="text-sm">
+                    {% if settings.email %}{{ settings.email }} | {% endif %}
+                    {% if settings.location %}{{ settings.location }} | {% endif %}
+                    {% if settings.linkedin_url %}{{ settings.linkedin_url.split('//')[-1] }} | {% endif %}
+                    {% if settings.github_url %}{{ settings.github_url.split('//')[-1] }}{% endif %}
+                </div>
+            </div>
+
+            <!-- Summary -->
+            {% if settings and settings.bio %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold uppercase border-b border-black mb-2 pb-1">Professional Summary</h2>
+                <p class="text-sm leading-relaxed text-justify">{{ settings.bio }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Education -->
+            {% if education_list %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold uppercase border-b border-black mb-2 pb-1">Education</h2>
+                {% for edu in education_list %}
+                <div class="mb-4">
+                    <div class="flex justify-between items-baseline font-bold">
+                        <span>{{ edu.degree }}</span>
+                        <span>{{ edu.start_date }} - {{ edu.end_date }}</span>
+                    </div>
+                    <div>
+                        <span class="italic">{{ edu.college }}</span>
+                        {% if edu.cgpa %} | {% if '%' in edu.cgpa %}Percentage: {{ edu.cgpa }}{% else %}CGPA: {{
+                        edu.cgpa }}{% endif %}{% endif %}
+                    </div>
+                    {% if edu.description %}
+                    <p class="text-sm mt-1 whitespace-pre-wrap break-words">{{ edu.description }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Experience -->
+            {% if experience_list %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold uppercase border-b border-black mb-2 pb-1">Experience</h2>
+                {% for exp in experience_list %}
+                <div class="mb-4">
+                    <div class="flex justify-between items-baseline font-bold">
+                        <span>{{ exp.role }}</span>
+                        <span>{{ exp.start_date }} - {{ exp.end_date }}</span>
+                    </div>
+                    <div class="italic mb-1">{{ exp.company }}</div>
+                    {% if exp.description %}
+                    <p class="text-sm whitespace-pre-wrap break-words">{{ exp.description }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Projects -->
+            {% if projects_list %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold uppercase border-b border-black mb-2 pb-1">Projects</h2>
+                {% for project in projects_list %}
+                <div class="mb-4">
+                    <div class="flex justify-between items-baseline font-bold">
+                        <span>{{ project.title }}</span>
+                        {% if project.github_link or project.demo_link %}
+                        <span class="text-xs font-normal">
+                            {% if project.demo_link %}<a href="{{ project.demo_link }}"
+                                class="hover:underline">Demo</a>{% endif %}
+                            {% if project.demo_link and project.github_link %} | {% endif %}
+                            {% if project.github_link %}<a href="{{ project.github_link }}"
+                                class="hover:underline">GitHub</a>{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% if project.tech_stack %}
+                    <div class="text-sm italic mb-1">{{ project.tech_stack }}</div>
+                    {% endif %}
+                    {% if project.description %}
+                    <p class="text-sm whitespace-pre-wrap break-words">{{ project.description }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Certifications -->
+            {% if cert_list %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold uppercase border-b border-black mb-2 pb-1">Certifications</h2>
+                {% for cert in cert_list %}
+                <div class="mb-2">
+                    <div class="flex justify-between items-baseline font-bold">
+                        <span>{{ cert.name }}</span>
+                        <span>{{ cert.date_earned }}</span>
+                    </div>
+                    <div>{{ cert.issuer }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Skills -->
+            <div class="mb-6">
+                <h2 class="text-lg font-bold uppercase border-b border-black mb-2 pb-1">Technical Skills</h2>
+                {% for category, cat_skills in skills_by_category.items() %}
+                <div class="text-sm mb-1">
+                    <span class="font-bold">{{ category|replace('-', ' ')|title }}:</span>
+                    {% set skill_names = [] %}
+                    {% for skill in cat_skills %}
+                    {% set _ = skill_names.append(skill.name) %}
+                    {% endfor %}
+                    {{ skill_names|join(', ') }}
+                </div>
+                {% endfor %}
+                {% if settings and settings.specialty %}
+                <div class="text-sm mt-2">
+                    <span class="font-bold">Specialties:</span>
+                    {{ settings.specialty }}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Clean overrides for ATS */
+    nav,
+    .scanlines,
+    .cyber-grid {
+        display: none !important;
+    }
+
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+        font-family: 'Times New Roman', serif !important;
+    }
+
+    @media print {
+        body {
+            background-color: white !important;
+            font-size: 11pt;
+        }
+
+        .print\:hidden {
+            display: none !important;
+        }
+
+        @page {
+            margin: 1in;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app, send_file
-from models import Project, BlogPost, Skill, Settings, Message
+from flask import Blueprint, render_template, abort, request, flash, redirect, url_for, send_file, current_app
+from models import Project, BlogPost, Skill, Settings, Message, Education, Experience, Certification
 from forms.contact_form import ContactForm
 from app import db
 import os
 from io import BytesIO
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 public_bp = Blueprint('public', __name__)
 
@@ -14,6 +14,9 @@ def index():
     featured_projects = Project.query.filter_by(featured=True).order_by(Project.created_at.desc()).limit(4).all()
     recent_posts = BlogPost.query.filter_by(published=True).order_by(BlogPost.created_at.desc()).limit(3).all()
     skills = Skill.query.order_by(Skill.display_order).all()
+    education_list = Education.query.order_by(Education.display_order).all()
+    experience_list = Experience.query.order_by(Experience.display_order).all()
+    cert_list = Certification.query.order_by(Certification.display_order).all()
     
     # Group skills by category
     skills_by_category = {}
@@ -26,7 +29,11 @@ def index():
                          settings=settings,
                          featured_projects=featured_projects,
                          recent_posts=recent_posts,
-                         skills_by_category=skills_by_category)
+                         skills_by_category=skills_by_category,
+                         education_list=education_list,
+                         experience_list=experience_list,
+                         cert_list=cert_list)
+
 
 @public_bp.route('/about')
 def about():
@@ -106,16 +113,6 @@ def contact():
     
     return render_template('contact.html', form=form, settings=settings)
 
-@public_bp.route('/download-resume')
-def download_resume():
-    settings = Settings.query.first()
-    if settings and settings.resume_path:
-        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'resume', settings.resume_path)
-        if os.path.exists(file_path):
-            return send_file(file_path, as_attachment=True)
-    flash('Resume not found', 'error')
-    return redirect(url_for('public.index'))
-
 @public_bp.route('/circle-favicon.png')
 def circle_favicon():
     settings = Settings.query.first()
@@ -156,6 +153,91 @@ def circle_favicon():
     if os.path.exists(fallback_path):
         return send_file(fallback_path)
     return "", 404
+
+@public_bp.route('/resume')
+def resume_page():
+    settings = Settings.query.first()
+    skills = Skill.query.order_by(Skill.display_order).all()
+    education_list = Education.query.order_by(Education.display_order).all()
+    experience_list = Experience.query.order_by(Experience.display_order).all()
+    cert_list = Certification.query.order_by(Certification.display_order).all()
+    projects_list = Project.query.order_by(Project.created_at.desc()).all()
+    
+    skills_by_category = {}
+    for skill in skills:
+        if skill.category not in skills_by_category:
+            skills_by_category[skill.category] = []
+        skills_by_category[skill.category].append(skill)
+        
+    template_name = settings.resume_template if settings and settings.resume_template else 'resume_default.html'
+    return render_template(template_name,
+                         settings=settings,
+                         skills_by_category=skills_by_category,
+                         education_list=education_list,
+                         experience_list=experience_list,
+                         cert_list=cert_list,
+                         projects_list=projects_list)
+
+@public_bp.route('/resume/download')
+def download_html_resume():
+    settings = Settings.query.first()
+    skills = Skill.query.order_by(Skill.display_order).all()
+    education_list = Education.query.order_by(Education.display_order).all()
+    experience_list = Experience.query.order_by(Experience.display_order).all()
+    cert_list = Certification.query.order_by(Certification.display_order).all()
+    projects_list = Project.query.order_by(Project.created_at.desc()).all()
+    
+    skills_by_category = {}
+    for skill in skills:
+        if skill.category not in skills_by_category:
+            skills_by_category[skill.category] = []
+        skills_by_category[skill.category].append(skill)
+        
+    template_name = settings.resume_template if settings and settings.resume_template else 'resume_default.html'
+    html_content = render_template(template_name,
+                         settings=settings,
+                         skills_by_category=skills_by_category,
+                         education_list=education_list,
+                         experience_list=experience_list,
+                         cert_list=cert_list,
+                         projects_list=projects_list,
+                         is_download=True)
+                         
+    # Create bytes and send as attachment
+    buffer = BytesIO(html_content.encode('utf-8'))
+    return send_file(buffer, as_attachment=True, download_name='resume.html', mimetype='text/html')
+
+@public_bp.route('/resume/download/doc')
+def download_doc_resume():
+    settings = Settings.query.first()
+    skills = Skill.query.order_by(Skill.display_order).all()
+    education_list = Education.query.order_by(Education.display_order).all()
+    experience_list = Experience.query.order_by(Experience.display_order).all()
+    cert_list = Certification.query.order_by(Certification.display_order).all()
+    projects_list = Project.query.order_by(Project.created_at.desc()).all()
+    
+    skills_by_category = {}
+    for skill in skills:
+        if skill.category not in skills_by_category:
+            skills_by_category[skill.category] = []
+        skills_by_category[skill.category].append(skill)
+        
+    template_name = settings.resume_template if settings and settings.resume_template else 'resume_default.html'
+    html_content = render_template(template_name,
+                         settings=settings,
+                         skills_by_category=skills_by_category,
+                         education_list=education_list,
+                         experience_list=experience_list,
+                         cert_list=cert_list,
+                         projects_list=projects_list,
+                         is_download=True)
+    
+    # Wrap in html/body so MS Word understands it's HTML document to convert
+    html_with_meta = f"""<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset='utf-8'><title>Resume</title></head><body>{html_content}</body></html>"""
+    
+    buffer = BytesIO(html_with_meta.encode('utf-8'))
+    return send_file(buffer, as_attachment=True, download_name='resume.doc', mimetype='application/msword')
 
 @public_bp.app_errorhandler(404)
 def not_found_error(error):

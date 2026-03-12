@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Resume - Madhesh Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-20 min-h-screen bg-black">
+    <div class="container mx-auto px-6 max-w-5xl">
+        {% if not is_download %}
+        <div class="flex justify-between items-center mb-8 print:hidden">
+            <h1 class="text-2xl md:text-3xl font-bold neon-text glitch" data-text="INTERACTIVE RESUME">INTERACTIVE RESUME</h1>
+            <div class="flex items-center gap-4">
+                <div class="relative" id="download-dropdown">
+                    <button onclick="toggleDropdown()" 
+                        class="px-6 py-2 border border-green-500 text-green-500 font-bold hover:bg-green-500 hover:text-black transition-all flex items-center shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+                        <i class="fas fa-download mr-2"></i> DOWNLOAD <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-black border border-green-500 shadow-[0_0_20px_rgba(0,255,0,0.2)] z-50 overflow-hidden">
+                        <a href="javascript:void(0)" onclick="window.print(); toggleDropdown()" 
+                           class="block px-4 py-3 text-sm text-green-500 hover:bg-green-500 hover:text-black border-b border-green-900/50 transition-colors">
+                           <i class="fas fa-file-pdf mr-2"></i> PDF Document
+                        </a>
+                        <a href="{{ url_for('public.download_html_resume') }}" 
+                           class="block px-4 py-3 text-sm text-green-500 hover:bg-green-500 hover:text-black border-b border-green-900/50 transition-colors">
+                           <i class="fas fa-file-code mr-2"></i> HTML Format
+                        </a>
+                        <a href="{{ url_for('public.download_doc_resume') }}" 
+                           class="block px-4 py-3 text-sm text-green-500 hover:bg-green-500 hover:text-black transition-colors">
+                           <i class="fas fa-file-word mr-2"></i> Word (DOC)
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('public.index') }}" class="text-gray-500 hover:text-green-500 transition font-bold text-sm">
+                    BACK
+                </a>
+            </div>
+        </div>
+        <script>
+            function toggleDropdown() {
+                const menu = document.getElementById('dropdown-menu');
+                menu.classList.toggle('hidden');
+            }
+            window.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('download-dropdown');
+                const menu = document.getElementById('dropdown-menu');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        </script>
+        {% endif %}
+
+        <!-- The Resume Document -->
+        <div
+            class="cyber-card bg-gray-900 border border-green-500 p-8 md:p-12 print:p-0 print:bg-white print:text-black print:border-none shadow-[0_0_30px_rgba(0,255,0,0.15)] print:shadow-none mx-auto print:max-w-full">
+
+            <!-- Header section -->
+            <div
+                class="border-b border-green-500 print:border-gray-800 pb-8 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center print:flex-row print:text-left">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white print:text-black mb-2">{{ settings.owner_name
+                        if settings and settings.owner_name else 'MADHESH RASU A S' }}</h1>
+                    <h2 class="text-xl text-green-500 font-mono print:text-gray-700">{{ settings.tagline if settings
+                        else 'AI/ML Engineer & Cybersecurity Researcher' }}</h2>
+                </div>
+                <div
+                    class="mt-6 md:mt-0 text-gray-400 print:text-gray-600 font-mono text-sm space-y-2 text-center md:text-right print:text-right">
+                    {% if settings.email %}
+                    <p><i class="fas fa-envelope text-green-500 print:text-gray-800 mr-2"></i>{{ settings.email }}</p>
+                    {% endif %}
+                    {% if settings.location %}
+                    <p><i class="fas fa-map-marker-alt text-green-500 print:text-gray-800 mr-2"></i>{{ settings.location
+                        }}</p>
+                    {% endif %}
+                    {% if settings.github_url %}
+                    <p><i class="fab fa-github text-green-500 print:text-gray-800 mr-2"></i>{{
+                        settings.github_url.split('//')[-1] }}</p>
+                    {% endif %}
+                    {% if settings.linkedin_url %}
+                    <p><i class="fab fa-linkedin text-green-500 print:text-gray-800 mr-2"></i>{{
+                        settings.linkedin_url.split('//')[-1] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-12 print:grid-cols-3">
+
+                <!-- Left Column (Wider) -->
+                <div class="md:col-span-2 print:col-span-2 space-y-12">
+
+                    <!-- Summary -->
+                    <section>
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-4 pb-1">
+                            Professional Summary</h3>
+                        <p class="text-gray-300 print:text-gray-700 leading-relaxed">{{ settings.bio if settings else
+                            'Highly motivated and passionate AI/ML and Cybersecurity Enthusiast.' }}</p>
+                    </section>
+
+                    <!-- Education -->
+                    {% if education_list %}
+                    <section class="mt-8">
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-6 pb-1">
+                            Education</h3>
+                        <div class="space-y-6">
+                            {% for edu in education_list %}
+                            <div>
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="text-lg font-bold text-green-400 print:text-black">{{ edu.degree }}</h4>
+                                    <span class="text-gray-400 font-mono text-sm print:text-gray-600 shrink-0 ml-4">{{
+                                        edu.start_date }} - {{ edu.end_date }}</span>
+                                </div>
+                                <h5 class="text-white print:text-gray-700 font-semibold mb-2">
+                                    {{ edu.college }}
+                                    {% if edu.cgpa %}
+                                    <span
+                                        class="text-green-500 font-mono ml-2 print:text-gray-500 text-sm border-l-2 border-gray-600 pl-2">{%
+                                        if '%' in edu.cgpa %}Percentage: {{ edu.cgpa }}{% else %}CGPA: {{ edu.cgpa }}{%
+                                        endif %}</span>
+                                    {% endif %}
+                                </h5>
+                                {% if edu.description %}
+                                <p class="text-gray-400 text-sm print:text-gray-700 whitespace-pre-wrap break-words">{{
+                                    edu.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    <!-- Experience -->
+                    {% if experience_list %}
+                    <section class="mt-12">
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-6 pb-1">
+                            Experience</h3>
+                        <div class="space-y-6">
+                            {% for exp in experience_list %}
+                            <div>
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="text-lg font-bold text-green-400 print:text-black">{{ exp.role }}</h4>
+                                    <span class="text-gray-400 font-mono text-sm print:text-gray-600 shrink-0 ml-4">{{
+                                        exp.start_date }} - {{ exp.end_date }}</span>
+                                </div>
+                                <h5 class="text-white print:text-gray-700 font-semibold mb-2">{{ exp.company }}</h5>
+                                {% if exp.description %}
+                                <p class="text-gray-400 text-sm print:text-gray-700 whitespace-pre-wrap break-words">{{
+                                    exp.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    <!-- Projects -->
+                    {% if projects_list %}
+                    <section class="mt-12">
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-6 pb-1">
+                            Projects</h3>
+                        <div class="space-y-6">
+                            {% for project in projects_list %}
+                            <div>
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="text-lg font-bold text-green-400 print:text-black">{{ project.title }}</h4>
+                                    {% if project.github_link or project.demo_link %}
+                                    <span class="text-gray-400 font-mono text-sm print:text-gray-600 shrink-0 ml-4">
+                                        {% if project.github_link %}GitHub{% endif %}
+                                        {% if project.github_link and project.demo_link %} | {% endif %}
+                                        {% if project.demo_link %}Live{% endif %}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <h5 class="text-white print:text-gray-700 font-semibold mb-2">{{ project.category }}</h5>
+                                {% if project.description %}
+                                <p class="text-gray-400 text-sm print:text-gray-700 whitespace-pre-wrap break-words">{{
+                                    project.description[:300] }}{% if project.description|length > 300 %}...{% endif %}</p>
+                                {% endif %}
+                                {% if project.tech_stack %}
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    {% for tech in project.get_tech_list() %}
+                                    <span class="text-xs text-green-500 print:text-gray-600">#{{ tech }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    <!-- Certifications -->
+                    {% if cert_list %}
+                    <section class="mt-12">
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-6 pb-1">
+                            Certifications</h3>
+                        <div class="space-y-6">
+                            {% for cert in cert_list %}
+                            <div>
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="text-lg font-bold text-green-400 print:text-black">{{ cert.name }}</h4>
+                                    <span class="text-gray-400 font-mono text-sm print:text-gray-600 shrink-0 ml-4">{{
+                                        cert.date_earned }}</span>
+                                </div>
+                                <h5 class="text-white print:text-gray-700 font-semibold mb-2">{{ cert.issuer }}</h5>
+                                {% if cert.url %}
+                                <p class="text-green-500 text-sm font-mono print:text-gray-700 mb-1">URL: <a
+                                        href="{{ cert.url }}" class="hover:underline">{{ cert.url[:40] }}...</a></p>
+                                {% endif %}
+                                {% if cert.description %}
+                                <p class="text-gray-400 text-sm print:text-gray-700">{{ cert.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                </div>
+
+                <!-- Right Column (Narrower) -->
+                <div class="md:col-span-1 print:col-span-1 space-y-12">
+
+                    <!-- Core Skills -->
+                    <section>
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-6 pb-1">
+                            Core Skills</h3>
+                        <div class="space-y-6">
+                            {% for category, cat_skills in skills_by_category.items() %}
+                            <div>
+                                <h4
+                                    class="text-green-500 font-bold uppercase tracking-wider text-sm mb-3 print:text-gray-800">
+                                    {{ category|replace('-', ' ')|title }}</h4>
+                                <ul class="space-y-2">
+                                    {% for skill in cat_skills %}
+                                    <li class="flex items-center text-gray-300 print:text-gray-700 text-sm">
+                                        <i
+                                            class="fas fa-caret-right text-green-500 print:text-gray-800 mr-2 flex-shrink-0"></i>
+                                        <span>{{ skill.name }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    <!-- Specialties -->
+                    {% if settings and settings.specialty %}
+                    <section>
+                        <h3
+                            class="text-2xl font-bold text-white print:text-black border-b-2 border-green-500 print:border-gray-800 inline-block mb-6 pb-1">
+                            Specialties</h3>
+                        <div class="flex flex-wrap gap-2">
+                            {% for spec in settings.specialty.split(',') %}
+                            <span
+                                class="px-3 py-1 bg-green-900 bg-opacity-30 border border-green-500 text-green-400 text-sm rounded-sm print:border-gray-400 print:text-gray-700 print:bg-transparent">{{
+                                spec.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Print Styles -->
+<style>
+    @media print {
+        body {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        nav,
+        footer,
+        .scanlines,
+        .cyber-grid,
+        .scanline-effect {
+            display: none !important;
+        }
+
+        .print\:hidden {
+            display: none !important;
+        }
+
+        .cyber-card {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .text-green-500,
+        .text-green-400 {
+            color: #333 !important;
+        }
+
+        .border-green-500 {
+            border-color: #333 !important;
+        }
+    }
+</style>
+{% endblock %}

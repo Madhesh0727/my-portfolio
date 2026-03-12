@@ -85,6 +85,18 @@
                             class="hover:text-green-500 transition {% if request.endpoint == 'admin.skills' %}text-green-500{% endif %}">
                             <i class="fas fa-cog mr-1"></i>Skills
                         </a>
+                        <a href="{{ url_for('admin.education') }}"
+                            class="hover:text-green-500 transition {% if 'admin.education' in request.endpoint %}text-green-500{% endif %}">
+                            <i class="fas fa-graduation-cap mr-1"></i>Education
+                        </a>
+                        <a href="{{ url_for('admin.experience') }}"
+                            class="hover:text-green-500 transition {% if 'admin.experience' in request.endpoint %}text-green-500{% endif %}">
+                            <i class="fas fa-briefcase mr-1"></i>Experience
+                        </a>
+                        <a href="{{ url_for('admin.certifications') }}"
+                            class="hover:text-green-500 transition {% if 'admin.certifications' in request.endpoint %}text-green-500{% endif %}">
+                            <i class="fas fa-certificate mr-1"></i>Certifications
+                        </a>
                         <a href="{{ url_for('admin.messages') }}"
                             class="hover:text-green-500 transition {% if request.endpoint == 'admin.messages' %}text-green-500{% endif %}">
                             <i class="fas fa-envelope mr-1"></i>Logs

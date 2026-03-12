@@ -53,19 +53,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 
     {% block extra_head %}{% endblock %}
 </head>
 
 <body class="bg-black text-white font-mono">
     <!-- Background Elements -->
+    {% if not is_download and not request.args.get('download') %}
     <div id="neural-bg" class="neural-bg"></div>
     <div class="cyber-grid"></div>
     <div class="scanlines"></div>
+    {% endif %}
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 border-b border-green-500 backdrop-blur-sm">
+    {% if not is_download and not request.args.get('download') %}
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 border-b border-green-500 backdrop-blur-sm print:hidden">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <a href="{{ url_for('public.index') }}" class="text-2xl font-bold neon-text glitch"
@@ -102,9 +105,11 @@
             </div>
         </div>
     </nav>
+    {% endif %}
 
     <!-- Mobile Menu -->
-    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-95 z-40 hidden" id="mobile-menu">
+    {% if not is_download %}
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-95 z-40 hidden print:hidden" id="mobile-menu">
         <div class="flex flex-col items-center justify-center h-full space-y-8">
             <a href="{{ url_for('public.index') }}" class="text-2xl hover:text-green-500">Home</a>
             <a href="{{ url_for('public.about') }}" class="text-2xl hover:text-green-500">About</a>
@@ -132,13 +137,15 @@
             </button>
         </div>
     </div>
+    {% endif %}
 
     <!-- Main Content -->
     <main>
+        {% if not is_download %}
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="fixed top-20 right-6 z-50 animate-bounce">
+        <div class="fixed top-20 right-6 z-50 animate-bounce print:hidden">
             <div
                 class="bg-black border-2 {% if category == 'success' %}border-green-500 text-green-500{% elif category == 'danger' %}border-red-500 text-red-500{% else %}border-blue-500 text-blue-500{% endif %} px-6 py-3 rounded-lg neon-border">
                 {{ message }}
@@ -147,12 +154,14 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
+        {% endif %}
 
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-black border-t border-green-500 py-8">
+    {% if not is_download and not request.args.get('download') %}
+    <footer class="bg-black border-t border-green-500 py-8 print:hidden">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="text-center md:text-left mb-4 md:mb-0">
@@ -185,12 +194,13 @@
             </div>
         </div>
     </footer>
+    {% endif %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-    <script src="{{ url_for('static', filename='js/three-background.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/ai-animation.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/scroll-animations.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/typewriter.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js" defer></script>
+    <script src="{{ url_for('static', filename='js/three-background.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/ai-animation.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/scroll-animations.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/typewriter.js') }}" defer></script>
 
     <script>
         document.getElementById('menu-btn')?.addEventListener('click', () => {
@@ -201,13 +211,15 @@
             document.getElementById('mobile-menu').classList.add('hidden');
         });
 
-        // Initialize VanillaTilt for elements with data-tilt
-        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
-            max: 15,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.2,
-        });
+        // Initialize VanillaTilt for elements with data-tilt (disable on mobile for performance)
+        if (window.innerWidth > 768) {
+            VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.2,
+            });
+        }
     </script>
 
     {% block extra_scripts %}{% endblock %}

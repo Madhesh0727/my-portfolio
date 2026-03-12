@@ -56,7 +56,7 @@ def create_app(config_class=Config):
     with app.app_context():
         # Create all tables
         db.create_all()
-        print("✅ Database tables created successfully!")
+        print("Database tables created successfully!")
         
         # Create default admin user if not exists
         from models.user import User
@@ -70,7 +70,7 @@ def create_app(config_class=Config):
             admin.set_password(app.config['ADMIN_PASSWORD'])
             db.session.add(admin)
             db.session.commit()
-            print(f"✅ Admin user created: {app.config['ADMIN_USERNAME']}")
+            print(f"Admin user created: {app.config['ADMIN_USERNAME']}")
         
         # Create default settings if not exists
         if not Settings.query.first():
@@ -87,7 +87,7 @@ def create_app(config_class=Config):
             )
             db.session.add(settings)
             db.session.commit()
-            print("✅ Default settings created")
+            print("Default settings created")
     
     # Security Headers for production readiness
     @app.after_request

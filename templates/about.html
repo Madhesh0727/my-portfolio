@@ -55,13 +55,6 @@
                             <span class="ml-3">Twitter</span>
                         </a>
                         {% endif %}
-                        {% if settings.resume_path %}
-                        <a href="{{ url_for('static', filename='uploads/resume/' + settings.resume_path) }}"
-                            target="_blank" class="flex items-center text-gray-300 hover:text-green-500 transition">
-                            <i class="fas fa-file-pdf w-6"></i>
-                            <span class="ml-3">Download Resume</span>
-                        </a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -105,26 +98,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Resume PDF View Section -->
-        {% if settings and settings.resume_path %}
-        <div class="py-12 animate-on-scroll">
-            <div class="flex items-center justify-between mb-8">
-                <h2 class="text-4xl font-bold neon-text">Decrypted Curriculum Vitae [Resume]</h2>
-                <a href="{{ url_for('static', filename='uploads/resume/' + settings.resume_path) }}" download
-                    class="px-6 py-2 bg-green-500 text-black font-bold uppercase tracking-widest hover:bg-green-400 transition shadow-[0_0_15px_rgba(0,255,0,0.5)]"><i
-                        class="fas fa-download mr-2"></i> Download Local</a>
-            </div>
-
-            <div class="cyber-card p-2 h-[800px] border-2 border-green-500 rounded relative overflow-hidden group">
-                <div class="absolute inset-x-0 top-0 h-1 bg-green-500 animate-pulse pointer-events-none z-10"></div>
-
-                <iframe src="{{ url_for('static', filename='uploads/resume/' + settings.resume_path) }}"
-                    class="w-full h-full border-none opacity-90 group-hover:opacity-100 transition-opacity"
-                    title="Resume PDF View"></iframe>
-            </div>
-        </div>
-        {% endif %}
 
         <!-- Skills Section -->
         <div class="py-12">

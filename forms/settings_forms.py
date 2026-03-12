@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, TextAreaField, SubmitField, PasswordField
+from wtforms import StringField, TextAreaField, SubmitField, PasswordField, SelectField
 from wtforms.validators import Optional, Email, URL, Length
 
 class SettingsForm(FlaskForm):
@@ -35,6 +35,14 @@ class SettingsForm(FlaskForm):
     resume = FileField('Resume (PDF)', validators=[
         Optional(),
         FileAllowed(['pdf'], 'PDF only!')
+    ])
+    resume_template = SelectField('Resume Template', choices=[
+        ('resume_default.html', 'Default / Classic'),
+        ('resume_modern.html', 'Modern Clean'),
+        ('resume_professional.html', 'Professional / Corporate'),
+        ('resume_cyber.html', 'Cyberpunk Advanced'),
+        ('resume_ats.html', 'ATS Optimized (Plain)'),
+        ('resume_ai.html', 'AI/Tech Futuristic')
     ])
     
     submit = SubmitField('Save Settings')

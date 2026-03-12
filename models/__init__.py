@@ -4,3 +4,6 @@ from models.blog import BlogPost
 from models.skill import Skill
 from models.settings import Settings
 from models.message import Message
+from models.education import Education
+from models.experience import Experience
+from models.certification import Certification

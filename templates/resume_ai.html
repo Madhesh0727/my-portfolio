@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}Resume - Madhesh Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-20 min-h-screen bg-black text-gray-300 font-sans relative overflow-hidden">
+
+    <!-- Dark abstract background -->
+    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600 blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-pink-600 blur-[120px]"></div>
+        <div class="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-blue-600 blur-[100px]"></div>
+    </div>
+
+    <div class="container mx-auto px-4 max-w-5xl relative z-10">
+        {% if not is_download %}
+        <div
+            class="flex justify-between items-center mb-8 print:hidden glass-panel p-4 border border-white/10 rounded-2xl backdrop-blur-md">
+            <h1 class="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">AI
+                FUTURISTIC</h1>
+            <div class="flex items-center gap-4">
+                <div class="relative" id="download-dropdown">
+                    <button onclick="toggleDropdown()" 
+                        class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] transition flex items-center">
+                        <i class="fas fa-download mr-2 text-sm"></i> DOWNLOAD <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-gray-900 border border-white/10 shadow-2xl rounded-xl z-50 overflow-hidden backdrop-blur-xl">
+                        <a href="javascript:void(0)" onclick="window.print(); toggleDropdown()" 
+                           class="block px-4 py-3 text-sm text-gray-300 hover:bg-white/10 border-b border-white/5 transition-colors">
+                           <i class="fas fa-file-pdf mr-2 text-purple-400"></i> PDF Document
+                        </a>
+                        <a href="{{ url_for('public.download_html_resume') }}" 
+                           class="block px-4 py-3 text-sm text-gray-300 hover:bg-white/10 border-b border-white/5 transition-colors">
+                           <i class="fas fa-file-code mr-2 text-pink-400"></i> HTML Format
+                        </a>
+                        <a href="{{ url_for('public.download_doc_resume') }}" 
+                           class="block px-4 py-3 text-sm text-gray-300 hover:bg-white/10 transition-colors">
+                           <i class="fas fa-file-word mr-2 text-blue-400"></i> Word (DOC)
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('public.index') }}" class="text-gray-400 hover:text-white transition font-bold text-sm uppercase">
+                    Back
+                </a>
+            </div>
+        </div>
+        <script>
+            function toggleDropdown() {
+                const menu = document.getElementById('dropdown-menu');
+                menu.classList.toggle('hidden');
+            }
+            window.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('download-dropdown');
+                const menu = document.getElementById('dropdown-menu');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        </script>
+        {% endif %}
+
+        <!-- AI Resume Body -->
+        <div
+            class="bg-gray-900/80 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl p-8 md:p-14 print:p-0 print:border-none print:shadow-none print:rounded-none min-h-[1056px] mx-auto overflow-hidden relative">
+
+            <header
+                class="flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-white/10 pb-10 mb-10 print:border-black">
+                <div class="flex-grow text-center md:text-left">
+                    <h1
+                        class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight print:text-black">
+                        {{ settings.owner_name if settings and settings.owner_name else 'Madhesh Rasu' }}
+                    </h1>
+                    <h2
+                        class="text-xl md:text-2xl mt-2 font-medium text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 print:text-gray-800 print:bg-none">
+                        {{ settings.tagline if settings else 'AI/ML Engineer & Cybersecurity Researcher' }}
+                    </h2>
+
+                    <div
+                        class="flex flex-wrap justify-center md:justify-start gap-4 mt-6 text-sm text-gray-400 print:text-gray-600">
+                        {% if settings.email %}
+                        <span
+                            class="flex items-center px-4 py-2 bg-white/5 rounded-full print:bg-transparent print:p-0"><i
+                                class="fas fa-envelope mr-2 text-pink-500 print:text-black"></i>{{ settings.email
+                            }}</span>
+                        {% endif %}
+                        {% if settings.location %}
+                        <span
+                            class="flex items-center px-4 py-2 bg-white/5 rounded-full print:bg-transparent print:p-0"><i
+                                class="fas fa-map-marker-alt mr-2 text-pink-500 print:text-black"></i>{{
+                            settings.location }}</span>
+                        {% endif %}
+                        {% if settings.linkedin_url %}
+                        <span
+                            class="flex items-center px-4 py-2 bg-white/5 rounded-full print:bg-transparent print:p-0"><i
+                                class="fab fa-linkedin mr-2 text-pink-500 print:text-black"></i>{{
+                            settings.linkedin_url.split('//')[-1] }}</span>
+                        {% endif %}
+                        {% if settings.github_url %}
+                        <span
+                            class="flex items-center px-4 py-2 bg-white/5 rounded-full print:bg-transparent print:p-0"><i
+                                class="fab fa-github mr-2 text-pink-500 print:text-black"></i>{{
+                            settings.github_url.split('//')[-1] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 print:grid-cols-3">
+
+                <div class="lg:col-span-2 print:col-span-2 space-y-10">
+
+                    {% if settings.bio %}
+                    <section>
+                        <h3 class="text-xl font-bold text-white print:text-black mb-4 flex items-center">
+                            <span
+                                class="w-8 h-px bg-gradient-to-r from-purple-500 to-transparent mr-4 print:bg-black"></span>
+                            ABOUT
+                        </h3>
+                        <p class="text-gray-300 print:text-gray-800 leading-relaxed font-light">{{ settings.bio }}</p>
+                    </section>
+                    {% endif %}
+
+                    {% if education_list %}
+                    <section>
+                        <h3 class="text-xl font-bold text-white print:text-black mb-6 flex items-center">
+                            <span
+                                class="w-8 h-px bg-gradient-to-r from-pink-500 to-transparent mr-4 print:bg-black"></span>
+                            EDUCATION
+                        </h3>
+                        <div class="space-y-6">
+                            {% for edu in education_list %}
+                            <div
+                                class="bg-white/5 border border-white/10 rounded-2xl p-6 print:bg-transparent print:border-l-4 print:border-gray-500 print:rounded-none hover:bg-white/10 transition">
+                                <div class="flex flex-col sm:flex-row justify-between items-baseline mb-2">
+                                    <h4 class="text-lg font-bold text-white print:text-black">{{ edu.degree }}</h4>
+                                    <span class="text-sm text-pink-400 print:text-gray-600 font-medium">{{
+                                        edu.start_date }} - {{ edu.end_date }}</span>
+                                </div>
+                                <h5 class="text-md text-gray-300 print:text-gray-700">
+                                    {{ edu.college }}
+                                    {% if edu.cgpa %}
+                                    <span
+                                        class="ml-2 pl-2 border-l border-white/20 print:border-gray-400 text-purple-400 print:text-gray-500 font-mono text-sm">{%
+                                        if '%' in edu.cgpa %}Percentage: {{ edu.cgpa }}{% else %}CGPA: {{ edu.cgpa }}{%
+                                        endif %}</span>
+                                    {% endif %}
+                                </h5>
+                                {% if edu.description %}
+                                <p
+                                    class="text-sm text-gray-400 print:text-gray-800 mt-3 font-light whitespace-pre-wrap break-words">
+                                    {{ edu.description
+                                    }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if experience_list %}
+                    <section>
+                        <h3 class="text-xl font-bold text-white print:text-black mb-6 flex items-center">
+                            <span
+                                class="w-8 h-px bg-gradient-to-r from-blue-500 to-transparent mr-4 print:bg-black"></span>
+                            EXPERIENCE
+                        </h3>
+                        <div class="space-y-8">
+                            {% for exp in experience_list %}
+                            <div
+                                class="relative pl-8 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:rounded-full before:bg-gradient-to-br before:from-purple-500 before:to-pink-500 before:shadow-[0_0_10px_rgba(236,72,153,0.8)] print:before:bg-black print:before:shadow-none border-l border-white/10 print:border-gray-300">
+                                <div class="flex flex-col sm:flex-row justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white print:text-black">{{ exp.role }}</h4>
+                                    <span class="text-sm text-purple-400 print:text-gray-600 font-medium">{{
+                                        exp.start_date }} - {{ exp.end_date }}</span>
+                                </div>
+                                <h5 class="text-md text-blue-300 print:text-gray-700 font-medium mb-3">{{ exp.company }}
+                                </h5>
+                                {% if exp.description %}
+                                <p
+                                    class="text-sm text-gray-400 print:text-gray-800 font-light leading-relaxed whitespace-pre-wrap break-words">
+                                    {{
+                                    exp.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if projects_list %}
+                    <section>
+                        <h3 class="text-xl font-bold text-white print:text-black mb-6 flex items-center">
+                            <span
+                                class="w-8 h-px bg-gradient-to-r from-green-500 to-transparent mr-4 print:bg-black"></span>
+                            PROJECTS
+                        </h3>
+                        <div class="space-y-8">
+                            {% for project in projects_list %}
+                            <div
+                                class="relative pl-8 before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:rounded-full before:bg-gradient-to-br before:from-green-500 before:to-blue-500 before:shadow-[0_0_10px_rgba(34,197,94,0.8)] print:before:bg-black print:before:shadow-none border-l border-white/10 print:border-gray-300">
+                                <div class="flex flex-col sm:flex-row justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white print:text-black">{{ project.title }}</h4>
+                                    <span class="text-sm text-green-400 print:text-gray-600 font-medium">{{ project.category }}</span>
+                                </div>
+                                {% if project.description %}
+                                <p
+                                    class="text-sm text-gray-400 print:text-gray-800 font-light leading-relaxed whitespace-pre-wrap break-words mt-2">
+                                    {{ project.description[:300] }}{% if project.description|length > 300 %}...{% endif %}</p>
+                                {% endif %}
+                                {% if project.tech_stack %}
+                                 <div class="flex flex-wrap gap-2 mt-3">
+                                     {% for tech in project.get_tech_list() %}
+                                     <span class="px-2 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-gray-300 print:border-gray-300 print:text-gray-700">
+                                         {{ tech }}
+                                     </span>
+                                     {% endfor %}
+                                 </div>
+                                 {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                </div>
+
+                <div class="lg:col-span-1 print:col-span-1 space-y-10">
+
+                    <section>
+                        <h3 class="text-xl font-bold text-white print:text-black mb-6 flex items-center">
+                            <span
+                                class="w-8 h-px bg-gradient-to-r from-blue-400 to-transparent mr-4 print:bg-black"></span>
+                            SKILLS MAP
+                        </h3>
+                        <div class="space-y-6">
+                            {% for category, cat_skills in skills_by_category.items() %}
+                            <div>
+                                <h4
+                                    class="text-xs font-bold text-gray-500 print:text-gray-800 uppercase tracking-widest mb-3">
+                                    {{ category|replace('-', ' ')|title }}</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for skill in cat_skills %}
+                                    <span
+                                        class="px-3 py-1.5 bg-gradient-to-br from-white/10 to-transparent border border-white/10 rounded-xl text-sm text-gray-200 print:bg-transparent print:border-gray-300 print:text-gray-800 print:rounded shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-md">
+                                        {{ skill.name }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    {% if cert_list %}
+                    <section>
+                        <h3 class="text-xl font-bold text-white print:text-black mb-6 flex items-center">
+                            <span
+                                class="w-8 h-px bg-gradient-to-r from-purple-400 to-transparent mr-4 print:bg-black"></span>
+                            CERTIFICATES
+                        </h3>
+                        <div class="space-y-4">
+                            {% for cert in cert_list %}
+                            <div class="group">
+                                <h4 class="text-white print:text-black font-medium">{{ cert.name }}</h4>
+                                <div class="text-sm text-purple-300 print:text-gray-600">{{ cert.issuer }} <span
+                                        class="text-gray-600 print:text-gray-400">|</span> {{ cert.date_earned }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    nav,
+    .scanlines,
+    .cyber-grid {
+        display: none !important;
+    }
+
+    body {
+        background-color: #030014;
+    }
+
+    @media print {
+        body {
+            background-color: white !important;
+            font-size: 10pt;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .print\:hidden {
+            display: none !important;
+        }
+
+        .print\:text-black {
+            color: black !important;
+        }
+
+        .print\:text-gray-800 {
+            color: #333 !important;
+        }
+
+        @page {
+            margin: 1cm;
+            max-width: 100%;
+        }
+
+        /* Remove backgrounds for print clarity */
+        .bg-gray-900\/80,
+        .bg-gradient-to-r,
+        .bg-gradient-to-br,
+        .bg-white\/5,
+        .bg-white\/10 {
+            background: transparent !important;
+        }
+    }
+</style>
+{% endblock %}

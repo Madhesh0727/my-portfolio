@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Resume - Madhesh Portfolio{% endblock %}
+
+{% block content %}
+<section class="py-20 min-h-screen bg-black">
+    <div class="container mx-auto px-4 max-w-4xl">
+        {% if not is_download %}
+        <div class="flex justify-between items-center mb-8 print:hidden cyber-card p-4 border border-cyan-500">
+            <h1 class="text-xl md:text-2xl font-bold text-cyan-400 font-mono tracking-tighter">[SYS_RESUME_LOADED]</h1>
+            <div class="flex items-center gap-4">
+                <div class="relative" id="download-dropdown">
+                    <button onclick="toggleDropdown()" 
+                        class="px-5 py-2 bg-cyan-600 text-black font-bold uppercase rounded-none hover:bg-cyan-400 transition hover:shadow-[0_0_15px_rgba(0,255,255,0.7)] flex items-center">
+                        <i class="fas fa-download mr-2 text-sm"></i> DOWNLOAD <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-gray-900 border border-cyan-500 shadow-[0_0_20px_rgba(0,255,255,0.3)] z-50 overflow-hidden">
+                        <a href="javascript:void(0)" onclick="window.print(); toggleDropdown()" 
+                           class="block px-4 py-3 text-sm text-cyan-400 hover:bg-cyan-500 hover:text-black border-b border-cyan-900/50 transition-colors uppercase font-mono">
+                           <i class="fas fa-file-pdf mr-2"></i> [DUMP_PDF]
+                        </a>
+                        <a href="{{ url_for('public.download_html_resume') }}" 
+                           class="block px-4 py-3 text-sm text-cyan-400 hover:bg-cyan-500 hover:text-black border-b border-cyan-900/50 transition-colors uppercase font-mono">
+                           <i class="fas fa-file-code mr-2"></i> [DUMP_HTML]
+                        </a>
+                        <a href="{{ url_for('public.download_doc_resume') }}" 
+                           class="block px-4 py-3 text-sm text-cyan-400 hover:bg-cyan-500 hover:text-black transition-colors uppercase font-mono">
+                           <i class="fas fa-file-word mr-2"></i> [DUMP_DOC]
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('public.index') }}"
+                    class="text-gray-500 hover:text-cyan-400 transition uppercase font-mono font-bold text-sm">
+                    EXIT
+                </a>
+            </div>
+        </div>
+        <script>
+            function toggleDropdown() {
+                const menu = document.getElementById('dropdown-menu');
+                menu.classList.toggle('hidden');
+            }
+            window.addEventListener('click', function(e) {
+                const dropdown = document.getElementById('download-dropdown');
+                const menu = document.getElementById('dropdown-menu');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        </script>
+        {% endif %}
+
+        <!-- Cyberpunk Resume -->
+        <div
+            class="relative bg-gray-900 w-full p-8 md:p-12 print:p-0 print:bg-white print:text-black border border-cyan-500 print:border-none shadow-[0_0_20px_rgba(0,255,255,0.2)] print:shadow-none min-h-[1056px] mx-auto overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMwMDAiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMTExIi8+PC9zdmc+')] before:opacity-50 print:before:hidden before:pointer-events-none">
+
+            <div class="absolute top-0 right-0 p-2 font-mono text-xs text-cyan-800 print:hidden opacity-50 select-none">
+                ID: {{ settings.owner_name|length * 999 if settings else '9999' }}-SEC-CLR</div>
+
+            <!-- Header -->
+            <header class="border-b-2 border-dashed border-cyan-600 pb-8 mb-8 relative z-10 print:border-black">
+                <div class="flex flex-col md:flex-row justify-between items-start print:flex-row gap-6">
+                    <div>
+                        <h1
+                            class="text-4xl lg:text-5xl font-bold tracking-tight text-white print:text-black uppercase font-mono drop-shadow-[0_0_5px_rgba(0,255,255,0.5)] print:drop-shadow-none">
+                            > {{ settings.owner_name if settings and settings.owner_name else 'Madhesh Rasu A S' }}
+                        </h1>
+                        <h2
+                            class="text-xl text-cyan-400 print:text-gray-800 font-mono mt-3 pl-6 border-l-2 border-cyan-400 print:border-gray-500">
+                            {{ settings.tagline if settings else 'AI/ML Engineer & Cybersecurity Researcher' }}
+                        </h2>
+                    </div>
+                    <div
+                        class="text-xs font-mono text-gray-400 print:text-gray-800 flex flex-col space-y-2 bg-gray-950 print:bg-transparent p-4 border border-gray-800 print:border-none print:p-0">
+                        {% if settings.email %}
+                        <span class="flex items-center"><i
+                                class="fas fa-envelope w-5 text-cyan-500 print:text-black"></i>{{ settings.email
+                            }}</span>
+                        {% endif %}
+                        {% if settings.location %}
+                        <span class="flex items-center"><i
+                                class="fas fa-map-marker-alt w-5 text-cyan-500 print:text-black"></i>{{
+                            settings.location }}</span>
+                        {% endif %}
+                        {% if settings.linkedin_url %}
+                        <span class="flex items-center"><i
+                                class="fab fa-linkedin w-5 text-cyan-500 print:text-black"></i>{{
+                            settings.linkedin_url.split('//')[-1] }}</span>
+                        {% endif %}
+                        {% if settings.github_url %}
+                        <span class="flex items-center"><i
+                                class="fab fa-github w-5 text-cyan-500 print:text-black"></i>{{
+                            settings.github_url.split('//')[-1] }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
+
+            <div class="relative z-10 space-y-10">
+
+                <!-- Intro/Summary -->
+                <section>
+                    <h3
+                        class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-4 flex items-center">
+                        <i class="fas fa-terminal mr-3 text-sm"></i> SYSTEM.OBJ.SUMMARY
+                    </h3>
+                    <p
+                        class="text-gray-300 print:text-gray-800 font-mono text-sm leading-relaxed pl-5 border-l border-gray-800 print:border-transparent">
+                        {{ settings.bio if settings else 'Highly motivated and passionate AI/ML and Cybersecurity
+                        Enthusiast.' }}
+                    </p>
+                </section>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 print:grid-cols-2">
+                    <!-- Left Col -->
+                    <div class="space-y-10">
+                        <!-- Education -->
+                        {% if education_list %}
+                        <section>
+                            <h3
+                                class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-5 flex items-center">
+                                <i class="fas fa-database mr-3 text-sm"></i> KNOWLEDGE_BASE
+                            </h3>
+                            <div class="space-y-6">
+                                {% for edu in education_list %}
+                                <div
+                                    class="bg-gray-950 border border-gray-800 p-4 print:p-0 print:border-none print:bg-transparent hover:border-cyan-800 transition">
+                                    <div class="flex flex-col xl:flex-row justify-between xl:items-baseline mb-2">
+                                        <h4 class="text-base font-bold text-white print:text-black uppercase font-mono">
+                                            {{ edu.degree }}</h4>
+                                        <span
+                                            class="text-xs font-mono text-cyan-600 print:text-gray-600 mt-1 xl:mt-0 bg-cyan-950/30 print:bg-transparent px-2 py-1 print:p-0">{{
+                                            edu.start_date }} // {{ edu.end_date }}</span>
+                                    </div>
+                                    <h5 class="text-sm font-mono text-yellow-500 print:text-gray-700 mb-2">
+                                        @ {{ edu.college }}
+                                    </h5>
+                                    {% if edu.cgpa %}
+                                    <div
+                                        class="text-xs font-mono text-cyan-300 print:text-gray-600 mb-3 block border-l-2 border-cyan-600 print:border-gray-400 pl-2">
+                                        {% if '%' in edu.cgpa %}[PERCENTAGE]: {{ edu.cgpa }}{% else %}[CGPA]: {{
+                                        edu.cgpa }}{% endif %}
+                                    </div>
+                                    {% endif %}
+                                    {% if edu.description %}
+                                    <p
+                                        class="text-sm text-gray-400 print:text-gray-800 font-mono leading-relaxed whitespace-pre-wrap break-words">
+                                        {{
+                                        edu.description }}</p>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- Experience -->
+                        {% if experience_list %}
+                        <section>
+                            <h3
+                                class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-5 flex items-center mt-8">
+                                <i class="fas fa-network-wired mr-3 text-sm"></i> EXP_LOGS
+                            </h3>
+                            <div class="space-y-6">
+                                {% for exp in experience_list %}
+                                <div
+                                    class="bg-gray-950 border border-gray-800 p-4 print:p-0 print:border-none print:bg-transparent hover:border-cyan-800 transition">
+                                    <div class="flex flex-col xl:flex-row justify-between xl:items-baseline mb-2">
+                                        <h4 class="text-base font-bold text-white print:text-black uppercase font-mono">
+                                            {{ exp.role }}</h4>
+                                        <span
+                                            class="text-xs font-mono text-cyan-600 print:text-gray-600 mt-1 xl:mt-0 bg-cyan-950/30 print:bg-transparent px-2 py-1 print:p-0">{{
+                                            exp.start_date }} // {{ exp.end_date }}</span>
+                                    </div>
+                                    <h5 class="text-sm font-mono text-yellow-500 print:text-gray-700 uppercase mb-3">@
+                                        {{ exp.company }}</h5>
+                                    {% if exp.description %}
+                                    <p
+                                        class="text-sm text-gray-400 print:text-gray-800 font-mono leading-relaxed whitespace-pre-wrap break-words">
+                                        {{
+                                        exp.description }}</p>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- Projects -->
+                        {% if projects_list %}
+                        <section>
+                            <h3
+                                class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-5 flex items-center mt-8">
+                                <i class="fas fa-code-branch mr-3 text-sm"></i> PROJECT_LOGS
+                            </h3>
+                            <div class="space-y-6">
+                                {% for project in projects_list %}
+                                <div
+                                    class="bg-gray-950 border border-gray-800 p-4 print:p-0 print:border-none print:bg-transparent hover:border-cyan-800 transition">
+                                    <div class="flex flex-col xl:flex-row justify-between xl:items-baseline mb-2">
+                                        <h4 class="text-base font-bold text-white print:text-black uppercase font-mono">
+                                            {{ project.title }}</h4>
+                                        <span
+                                            class="text-xs font-mono text-cyan-600 print:text-gray-600 mt-1 xl:mt-0 bg-cyan-950/30 print:bg-transparent px-2 py-1 print:p-0">{{ project.category }}</span>
+                                    </div>
+                                    {% if project.github_link or project.demo_link %}
+                                    <div class="text-xs font-mono text-cyan-300 mb-2">
+                                        {% if project.github_link %}[SRC]: <a href="{{ project.github_link }}" class="hover:underline">GITHUB</a>{% endif %}
+                                        {% if project.github_link and project.demo_link %} // {% endif %}
+                                        {% if project.demo_link %}[LIVE]: <a href="{{ project.demo_link }}" class="hover:underline">DEMO</a>{% endif %}
+                                    </div>
+                                    {% endif %}
+                                    {% if project.description %}
+                                    <p
+                                        class="text-sm text-gray-400 print:text-gray-800 font-mono leading-relaxed whitespace-pre-wrap break-words">
+                                        {{ project.description[:300] }}{% if project.description|length > 300 %}...{% endif %}</p>
+                                    {% endif %}
+                                    {% if project.tech_stack %}
+                                    <div class="flex flex-wrap gap-2 mt-3">
+                                        {% for tech in project.get_tech_list() %}
+                                        <span class="text-[10px] font-mono text-cyan-700 print:text-gray-600">#{{ tech }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+                    </div>
+
+                    <!-- Right Col -->
+                    <div class="space-y-10">
+                        <!-- Certifications -->
+                        {% if cert_list %}
+                        <section>
+                            <h3
+                                class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-5 flex items-center">
+                                <i class="fas fa-certificate mr-3 text-sm"></i> CERT_LOGS
+                            </h3>
+                            <div class="space-y-6">
+                                {% for cert in cert_list %}
+                                <div
+                                    class="bg-gray-950 border border-gray-800 p-4 print:p-0 print:border-none print:bg-transparent hover:border-cyan-800 transition">
+                                    <div class="flex flex-col xl:flex-row justify-between xl:items-baseline mb-2">
+                                        <h4 class="text-base font-bold text-white print:text-black uppercase font-mono">
+                                            {{ cert.name }}</h4>
+                                        <span
+                                            class="text-xs font-mono text-cyan-600 print:text-gray-600 mt-1 xl:mt-0 bg-cyan-950/30 print:bg-transparent px-2 py-1 print:p-0">{{
+                                            cert.date_earned }}</span>
+                                    </div>
+                                    <h5 class="text-sm font-mono text-yellow-500 print:text-gray-700 uppercase mb-3">@
+                                        {{ cert.issuer }}</h5>
+                                    {% if cert.url %}
+                                    <p
+                                        class="text-xs font-mono text-cyan-300 print:text-gray-600 mb-3 block border-l-2 border-cyan-600 print:border-gray-400 pl-2">
+                                        [URL_LINK]: <a href="{{ cert.url }}" class="hover:underline">{{ cert.url[:30]
+                                            }}...</a>
+                                    </p>
+                                    {% endif %}
+                                    {% if cert.description %}
+                                    <p
+                                        class="text-sm text-gray-400 print:text-gray-800 font-mono leading-relaxed whitespace-pre-wrap break-words">
+                                        {{
+                                        cert.description }}</p>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+
+                        <!-- Skills -->
+                        <section>
+                            <h3
+                                class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-5 flex items-center">
+                                <i class="fas fa-microchip mr-3 text-sm"></i> CORE_MODULES
+                            </h3>
+                            <div class="space-y-4">
+                                {% for category, cat_skills in skills_by_category.items() %}
+                                <div>
+                                    <h4
+                                        class="text-xs font-bold text-gray-500 print:text-gray-800 uppercase font-mono mb-2">
+                                        :: {{ category|replace('-', ' ')|title }}</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        {% for skill in cat_skills %}
+                                        <span
+                                            class="px-2 py-1 bg-gray-900 border border-cyan-900/50 print:border-gray-400 text-cyan-300 print:text-black font-mono text-xs uppercase">{{
+                                            skill.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+
+                        <!-- Specialties -->
+                        {% if settings and settings.specialty %}
+                        <section>
+                            <h3
+                                class="text-xl font-bold text-cyan-400 print:text-black font-mono uppercase border-b border-cyan-800 print:border-gray-300 pb-2 mb-5 flex items-center mt-8">
+                                <i class="fas fa-shield-alt mr-3 text-sm"></i> SPECIAL_OPS
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                {% for spec in settings.specialty.split(',') %}
+                                <div
+                                    class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/50 print:border-black text-yellow-500 print:text-black font-mono text-xs">
+                                    {{ spec.strip() }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </section>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="text-center mt-12 pt-8 border-t border-gray-800 print:border-none">
+                    <span class="text-xs font-mono text-gray-600 print:text-gray-500">EOF // FILE_ID_0X{{ range(1000,
+                        9999) | random }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Remove base.html background styles */
+    nav,
+    .scanlines,
+    .cyber-grid {
+        display: none !important;
+    }
+
+    body {
+        background-color: #050505;
+    }
+
+    @media print {
+        body {
+            background-color: white !important;
+            font-size: 10pt;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .print\:hidden {
+            display: none !important;
+        }
+
+        .bg-gray-900,
+        .bg-gray-950 {
+            background-color: white !important;
+        }
+
+        @page {
+            margin: 1.5cm;
+        }
+    }
+</style>
+{% endblock %}
