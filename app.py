@@ -54,9 +54,34 @@ def create_app(config_class=Config):
             
     # Create database tables
     with app.app_context():
-        # Create all tables
-        db.create_all()
-        print("Database tables created successfully!")
+        try:
+            # Create all tables
+            db.create_all()
+            print("Database tables created successfully!")
+            
+            # Migration check: Add missing columns if they don't exist
+            from sqlalchemy import text
+            columns_to_add = [
+                ('settings', 'resume_template', "VARCHAR(50) DEFAULT 'resume_default.html'"),
+                ('education', 'cgpa', "VARCHAR(50)"),
+                ('settings', 'location', "VARCHAR(200)"),
+                ('settings', 'specialty', "VARCHAR(200)"),
+                ('projects', 'tech_stack', "TEXT"),
+                ('projects', 'demo_link', "VARCHAR(200)"),
+                ('projects', 'github_link', "VARCHAR(200)"),
+                ('blog_posts', 'excerpt', "TEXT"),
+                ('blog_posts', 'views', "INTEGER DEFAULT 0")
+            ]
+            
+            for table, column, col_type in columns_to_add:
+                try:
+                    db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}"))
+                    db.session.commit()
+                    print(f"Added column {column} to {table}")
+                except Exception:
+                    db.session.rollback()
+        except Exception as e:
+            print(f"Database initialization error: {e}")
         
         # Create default admin user if not exists
         from models.user import User
