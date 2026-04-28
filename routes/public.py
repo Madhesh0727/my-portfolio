@@ -4,13 +4,14 @@ from forms.contact_form import ContactForm
 from app import db
 import os
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+from utils.site_data import get_resume_payload, get_settings_cached
 
 public_bp = Blueprint('public', __name__)
 
 @public_bp.route('/')
 def index():
-    settings = Settings.query.first()
+    settings = get_settings_cached()
     featured_projects = Project.query.filter_by(featured=True).order_by(Project.created_at.desc()).limit(4).all()
     recent_posts = BlogPost.query.filter_by(published=True).order_by(BlogPost.created_at.desc()).limit(3).all()
     skills = Skill.query.order_by(Skill.display_order).all()
@@ -37,7 +38,7 @@ def index():
 
 @public_bp.route('/about')
 def about():
-    settings = Settings.query.first()
+    settings = get_settings_cached()
     skills = Skill.query.order_by(Skill.display_order).all()
     
     skills_by_category = {}
@@ -85,14 +86,14 @@ def blog():
 @public_bp.route('/blog/<slug>')
 def blog_post(slug):
     post = BlogPost.query.filter_by(slug=slug, published=True).first_or_404()
-    post.views += 1
+    post.views = (post.views or 0) + 1
     db.session.commit()
     return render_template('blog_post.html', post=post)
 
 @public_bp.route('/contact', methods=['GET', 'POST'])
 def contact():
     form = ContactForm()
-    settings = Settings.query.first()
+    settings = get_settings_cached()
     
     if form.validate_on_submit():
         try:
@@ -115,7 +116,7 @@ def contact():
 
 @public_bp.route('/circle-favicon.png')
 def circle_favicon():
-    settings = Settings.query.first()
+    settings = get_settings_cached()
     if settings and settings.profile_image:
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'profile', settings.profile_image)
         if os.path.exists(file_path):
@@ -156,83 +157,28 @@ def circle_favicon():
 
 @public_bp.route('/resume')
 def resume_page():
-    settings = Settings.query.first()
-    skills = Skill.query.order_by(Skill.display_order).all()
-    education_list = Education.query.order_by(Education.display_order).all()
-    experience_list = Experience.query.order_by(Experience.display_order).all()
-    cert_list = Certification.query.order_by(Certification.display_order).all()
-    projects_list = Project.query.order_by(Project.created_at.desc()).all()
-    
-    skills_by_category = {}
-    for skill in skills:
-        if skill.category not in skills_by_category:
-            skills_by_category[skill.category] = []
-        skills_by_category[skill.category].append(skill)
-        
+    resume_payload = get_resume_payload()
+    settings = resume_payload['settings']
     template_name = settings.resume_template if settings and settings.resume_template else 'resume_default.html'
-    return render_template(template_name,
-                         settings=settings,
-                         skills_by_category=skills_by_category,
-                         education_list=education_list,
-                         experience_list=experience_list,
-                         cert_list=cert_list,
-                         projects_list=projects_list)
+    return render_template(template_name, **resume_payload)
 
 @public_bp.route('/resume/download')
 def download_html_resume():
-    settings = Settings.query.first()
-    skills = Skill.query.order_by(Skill.display_order).all()
-    education_list = Education.query.order_by(Education.display_order).all()
-    experience_list = Experience.query.order_by(Experience.display_order).all()
-    cert_list = Certification.query.order_by(Certification.display_order).all()
-    projects_list = Project.query.order_by(Project.created_at.desc()).all()
-    
-    skills_by_category = {}
-    for skill in skills:
-        if skill.category not in skills_by_category:
-            skills_by_category[skill.category] = []
-        skills_by_category[skill.category].append(skill)
-        
+    resume_payload = get_resume_payload()
+    settings = resume_payload['settings']
     template_name = settings.resume_template if settings and settings.resume_template else 'resume_default.html'
-    html_content = render_template(template_name,
-                         settings=settings,
-                         skills_by_category=skills_by_category,
-                         education_list=education_list,
-                         experience_list=experience_list,
-                         cert_list=cert_list,
-                         projects_list=projects_list,
-                         is_download=True)
+    html_content = render_template(template_name, **resume_payload, is_download=True)
                          
-    # Create bytes and send as attachment
     buffer = BytesIO(html_content.encode('utf-8'))
     return send_file(buffer, as_attachment=True, download_name='resume.html', mimetype='text/html')
 
 @public_bp.route('/resume/download/doc')
 def download_doc_resume():
-    settings = Settings.query.first()
-    skills = Skill.query.order_by(Skill.display_order).all()
-    education_list = Education.query.order_by(Education.display_order).all()
-    experience_list = Experience.query.order_by(Experience.display_order).all()
-    cert_list = Certification.query.order_by(Certification.display_order).all()
-    projects_list = Project.query.order_by(Project.created_at.desc()).all()
-    
-    skills_by_category = {}
-    for skill in skills:
-        if skill.category not in skills_by_category:
-            skills_by_category[skill.category] = []
-        skills_by_category[skill.category].append(skill)
-        
+    resume_payload = get_resume_payload()
+    settings = resume_payload['settings']
     template_name = settings.resume_template if settings and settings.resume_template else 'resume_default.html'
-    html_content = render_template(template_name,
-                         settings=settings,
-                         skills_by_category=skills_by_category,
-                         education_list=education_list,
-                         experience_list=experience_list,
-                         cert_list=cert_list,
-                         projects_list=projects_list,
-                         is_download=True)
+    html_content = render_template(template_name, **resume_payload, is_download=True)
     
-    # Wrap in html/body so MS Word understands it's HTML document to convert
     html_with_meta = f"""<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head><meta charset='utf-8'><title>Resume</title></head><body>{html_content}</body></html>"""
     

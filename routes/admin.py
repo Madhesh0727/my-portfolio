@@ -11,6 +11,7 @@ from forms.certification_forms import CertificationForm
 from app import db
 from utils.decorators import admin_required
 from utils.helpers import save_file, delete_file, create_slug
+from utils.site_data import clear_site_cache
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -522,6 +523,7 @@ def settings():
                 pass
         
         db.session.commit()
+        clear_site_cache()
         flash('Settings updated successfully!', 'success')
         return redirect(url_for('admin.settings'))
     

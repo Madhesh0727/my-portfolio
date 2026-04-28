@@ -19,6 +19,17 @@ class Config:
     SQLALCHEMY_DATABASE_URI = db_url or \
         'sqlite:///' + os.path.join(basedir, 'portfolio.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+    }
+
+    if db_url and db_url.startswith('postgresql'):
+        SQLALCHEMY_ENGINE_OPTIONS.update({
+            'pool_size': int(os.environ.get('DB_POOL_SIZE', 5)),
+            'max_overflow': int(os.environ.get('DB_MAX_OVERFLOW', 2)),
+            'pool_timeout': int(os.environ.get('DB_POOL_TIMEOUT', 30)),
+        })
     
     # File upload
     UPLOAD_FOLDER = os.path.join(basedir, 'static/uploads')

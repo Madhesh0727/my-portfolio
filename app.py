@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, has_request_context, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+from sqlalchemy import inspect, text
 from config import Config
 import os
 
@@ -10,16 +11,59 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
 
+
+def ensure_upload_folders(app):
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    for folder in ('projects', 'blog', 'profile', 'resume'):
+        os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], folder), exist_ok=True)
+
+
+def sync_optional_columns():
+    inspector = inspect(db.engine)
+    columns_to_add = {
+        'settings': {
+            'resume_template': "VARCHAR(50) DEFAULT 'resume_default.html'",
+            'location': "VARCHAR(200)",
+            'specialty': "VARCHAR(200)",
+        },
+        'education': {
+            'cgpa': "VARCHAR(50)",
+        },
+        'projects': {
+            'tech_stack': "TEXT",
+            'demo_link': "VARCHAR(200)",
+            'github_link': "VARCHAR(200)",
+        },
+        'blog_posts': {
+            'excerpt': "TEXT",
+            'views': "INTEGER DEFAULT 0",
+        },
+    }
+
+    existing_tables = set(inspector.get_table_names())
+    with db.engine.begin() as connection:
+        for table_name, columns in columns_to_add.items():
+            if table_name not in existing_tables:
+                continue
+
+            existing_columns = {
+                column['name'] for column in inspector.get_columns(table_name)
+            }
+            for column_name, column_type in columns.items():
+                if column_name in existing_columns:
+                    continue
+                connection.execute(
+                    text(
+                        f"ALTER TABLE {table_name} "
+                        f"ADD COLUMN {column_name} {column_type}"
+                    )
+                )
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Ensure upload folders exist
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'projects'), exist_ok=True)
-    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'blog'), exist_ok=True)
-    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'profile'), exist_ok=True)
-    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'resume'), exist_ok=True)
+    ensure_upload_folders(app)
     
     # Initialize extensions with app
     db.init_app(app)
@@ -42,44 +86,25 @@ def create_app(config_class=Config):
     
     @app.context_processor
     def inject_settings():
-        from models.settings import Settings
-        from models.message import Message
+        from utils.site_data import get_settings_cached, get_unread_message_count
+
         try:
-            settings_obj = Settings.query.first()
+            settings_obj = get_settings_cached()
             if settings_obj:
-                settings_obj.message_count = Message.query.filter_by(is_read=False).count()
+                settings_obj.message_count = (
+                    get_unread_message_count()
+                    if has_request_context() and request.path.startswith('/admin')
+                    else 0
+                )
             return dict(settings=settings_obj)
-        except:
+        except Exception:
             return dict(settings=None)
             
     # Create database tables
     with app.app_context():
         try:
-            # Create all tables
             db.create_all()
-            print("Database tables created successfully!")
-            
-            # Migration check: Add missing columns if they don't exist
-            from sqlalchemy import text
-            columns_to_add = [
-                ('settings', 'resume_template', "VARCHAR(50) DEFAULT 'resume_default.html'"),
-                ('education', 'cgpa', "VARCHAR(50)"),
-                ('settings', 'location', "VARCHAR(200)"),
-                ('settings', 'specialty', "VARCHAR(200)"),
-                ('projects', 'tech_stack', "TEXT"),
-                ('projects', 'demo_link', "VARCHAR(200)"),
-                ('projects', 'github_link', "VARCHAR(200)"),
-                ('blog_posts', 'excerpt', "TEXT"),
-                ('blog_posts', 'views', "INTEGER DEFAULT 0")
-            ]
-            
-            for table, column, col_type in columns_to_add:
-                try:
-                    db.session.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}"))
-                    db.session.commit()
-                    print(f"Added column {column} to {table}")
-                except Exception:
-                    db.session.rollback()
+            sync_optional_columns()
         except Exception as e:
             print(f"Database initialization error: {e}")
         

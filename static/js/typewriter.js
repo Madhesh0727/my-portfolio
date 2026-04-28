@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const typewriterElement = document.getElementById('typewriter');
     if (!typewriterElement) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        typewriterElement.textContent = 'AI Builder';
+        return;
+    }
 
     const words = [
-        "Hi, I'm Madhesh",
-        "Cybersecurity Student",
-        "AI Builder"
+        "AI Builder",
+        "Cybersecurity Engineer",
+        "Flask + Product-Focused Developer"
     ];
     
     let wordIndex = 0;

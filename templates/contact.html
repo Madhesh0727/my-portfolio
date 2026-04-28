@@ -1,123 +1,111 @@
 {% extends "base.html" %}
 
-{% block title %}Contact - Madhesh{% endblock %}
+{% block title %}Contact | {{ settings.owner_name if settings and settings.owner_name else 'Madhesh' }}{% endblock %}
 
 {% block content %}
 <section class="py-32 min-h-screen flex items-center">
     <div class="container mx-auto px-6">
-        <h1 class="text-5xl font-bold text-center mb-16 neon-text glitch" data-text="ESTABLISH CONNECTION">ESTABLISH
-            CONNECTION</h1>
+        <div class="section-head reveal text-center max-w-3xl mx-auto">
+            <div class="section-tag">Contact</div>
+            <h1 class="section-title">Let’s make the next build feel thoughtful, polished, and fast.</h1>
+            <p class="section-copy">
+                {{ settings.contact_page_text if settings and settings.contact_page_text else "Share your idea, role, or collaboration. I’ll get back with a clear response and next steps." }}
+            </p>
+        </div>
 
-        <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            <!-- Contact Info -->
-            <div class="cyber-card animate-on-scroll" data-tilt>
-                <h2 class="text-3xl font-bold mb-6 text-green-500 border-b border-green-500 pb-2">TRANSMISSION DATA</h2>
-                <p class="text-gray-400 mb-8 leading-relaxed">
-                    {{ settings.contact_page_text if settings and settings.contact_page_text else "Opening a secure
-                    channel. Have
-                    an opportunity or project? My neural network is always listening for new challenges in AI/ML and
-                    Security." }}
+        <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 max-w-6xl mx-auto mt-12">
+            <div class="content-panel reveal">
+                <h2 class="panel-title">Reach Out</h2>
+                <p class="text-slate-300 leading-7 mb-8">
+                    Best for internship opportunities, freelance work, product builds, portfolio feedback, or technical collaboration.
                 </p>
 
-                <div class="space-y-6">
+                <div class="space-y-5">
                     {% if settings and settings.email %}
-                    <div class="flex items-center group">
-                        <div
-                            class="w-12 h-12 flex items-center justify-center border border-green-500 rounded bg-black mr-4 text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
-                            <i class="fas fa-envelope text-xl"></i>
-                        </div>
+                    <div class="contact-meta">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                         <div>
-                            <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Protocol</div>
-                            <div class="text-gray-300 font-mono">{{ settings.email }}</div>
+                            <p class="info-label">Email</p>
+                            <p class="text-slate-100 break-all">{{ settings.email }}</p>
                         </div>
                     </div>
                     {% endif %}
 
-                    <div class="flex items-center group">
-                        <div
-                            class="w-12 h-12 flex items-center justify-center border border-green-500 rounded bg-black mr-4 text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
-                            <i class="fas fa-map-marker-alt text-xl"></i>
-                        </div>
+                    <div class="contact-meta">
+                        <div class="contact-icon"><i class="fas fa-location-dot"></i></div>
                         <div>
-                            <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Coordinates</div>
-                            <div class="text-gray-300 font-mono">{{ settings.location if settings and settings.location
-                                else 'Chennai, India' }}</div>
+                            <p class="info-label">Location</p>
+                            <p class="text-slate-100">{{ settings.location if settings and settings.location else 'Chennai, India' }}</p>
                         </div>
                     </div>
 
-                    {% if settings and settings.whatsapp_url %}
-                    <div class="flex items-center group">
-                        <div
-                            class="w-12 h-12 flex items-center justify-center border border-green-500 rounded bg-black mr-4 text-green-500 group-hover:bg-green-500 group-hover:text-black transition">
-                            <i class="fab fa-whatsapp text-xl"></i>
-                        </div>
+                    {% if settings and settings.linkedin_url %}
+                    <div class="contact-meta">
+                        <div class="contact-icon"><i class="fab fa-linkedin-in"></i></div>
                         <div>
-                            <div class="text-xs text-green-500 font-bold uppercase tracking-wider">Fast-Link</div>
-                            <a href="{{ settings.whatsapp_url }}" target="_blank"
-                                class="text-gray-300 font-mono hover:text-green-500 hover:underline">Message via
-                                WhatsApp</a>
+                            <p class="info-label">LinkedIn</p>
+                            <a href="{{ settings.linkedin_url }}" target="_blank" class="text-brand-400 hover:text-white transition-colors">
+                                Connect professionally
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if settings and settings.whatsapp_url %}
+                    <div class="contact-meta">
+                        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                        <div>
+                            <p class="info-label">Quick Message</p>
+                            <a href="{{ settings.whatsapp_url }}" target="_blank" class="text-brand-400 hover:text-white transition-colors">
+                                Chat on WhatsApp
+                            </a>
                         </div>
                     </div>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- Contact Form -->
-            <div class="cyber-card animate-on-scroll relative">
-                <!-- Scanline effect for card -->
-                <div
-                    class="absolute inset-0 bg-gradient-to-b from-transparent to-green-900 opacity-10 pointer-events-none">
-                </div>
-
-                <h2 class="text-2xl font-bold mb-6 text-green-500">INITIATE PING</h2>
-
-                <form method="POST" action="{{ url_for('public.contact') }}" class="space-y-4 relative z-10">
+            <div class="content-panel reveal">
+                <h2 class="panel-title">Send a Message</h2>
+                <form method="POST" action="{{ url_for('public.contact') }}" class="space-y-5">
                     {{ form.hidden_tag() }}
 
-                    <div>
-                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Sender ID
-                            Object [Name]</label>
-                        {{ form.name(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
-                        p-3 font-mono outline-none transition placeholder-gray-700", placeholder="Enter Name") }}
-                        {% if form.name.errors %}
-                        <p class="text-red-500 text-xs italic mt-1">{{ form.name.errors[0] }}</p>
-                        {% endif %}
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Your Name</label>
+                            {{ form.name(class="form-input", placeholder="Enter your name") }}
+                            {% if form.name.errors %}
+                            <p class="form-error">{{ form.name.errors[0] }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label class="form-label">Email Address</label>
+                            {{ form.email(class="form-input", placeholder="you@example.com") }}
+                            {% if form.email.errors %}
+                            <p class="form-error">{{ form.email.errors[0] }}</p>
+                            {% endif %}
+                        </div>
                     </div>
 
                     <div>
-                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Reply-To
-                            Address Object [Email]</label>
-                        {{ form.email(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
-                        p-3 font-mono outline-none transition placeholder-gray-700", placeholder="Enter Email") }}
-                        {% if form.email.errors %}
-                        <p class="text-red-500 text-xs italic mt-1">{{ form.email.errors[0] }}</p>
-                        {% endif %}
-                    </div>
-
-                    <div>
-                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Transmission
-                            Subject</label>
-                        {{ form.subject(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
-                        p-3 font-mono outline-none transition placeholder-gray-700", placeholder="Reason for Access") }}
+                        <label class="form-label">Subject</label>
+                        {{ form.subject(class="form-input", placeholder="What would you like to discuss?") }}
                         {% if form.subject.errors %}
-                        <p class="text-red-500 text-xs italic mt-1">{{ form.subject.errors[0] }}</p>
+                        <p class="form-error">{{ form.subject.errors[0] }}</p>
                         {% endif %}
                     </div>
 
                     <div>
-                        <label class="block text-green-500 text-xs font-bold mb-2 uppercase tracking-wide">Encrypted
-                            Payload [Message]</label>
-                        {{ form.message(class="w-full bg-black border border-green-900 focus:border-green-500 text-white
-                        p-3 font-mono outline-none transition h-32 resize-none placeholder-gray-700",
-                        placeholder="Transmit your request here...") }}
+                        <label class="form-label">Message</label>
+                        {{ form.message(class="form-input min-h-[160px] resize-y", placeholder="Share the context, timeline, and how I can help.") }}
                         {% if form.message.errors %}
-                        <p class="text-red-500 text-xs italic mt-1">{{ form.message.errors[0] }}</p>
+                        <p class="form-error">{{ form.message.errors[0] }}</p>
                         {% endif %}
                     </div>
 
-                    <button type="submit"
-                        class="w-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-black font-bold py-3 uppercase tracking-widest transition group">
-                        <i class="fas fa-satellite-dish mr-2 group-hover:animate-ping"></i> Transmit Packet
+                    <button type="submit" class="btn-primary w-full justify-center">
+                        <i class="fas fa-paper-plane mr-2"></i>Send Message
                     </button>
                 </form>
             </div>

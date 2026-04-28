@@ -4,154 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Madhesh - AI/ML Engineer & Cybersecurity Expert{% endblock %}</title>
+    <title>{% block title %}Madhesh | Portfolio{% endblock %}</title>
+    <meta name="description"
+        content="{{ settings.tagline if settings and settings.tagline else 'Portfolio of Madhesh - AI, security, and full-stack projects.' }}">
 
-    <!-- Dynamic Favicon -->
     {% if settings and settings.profile_image %}
     <link rel="icon" type="image/png" href="{{ url_for('public.circle_favicon') }}">
     {% else %}
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     {% endif %}
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Dynamic Theme Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        green: {
-                            400: '{{ settings.theme_color if settings and settings.theme_color else "#00ff00" }}',
-                            500: '{{ settings.theme_color if settings and settings.theme_color else "#00ff00" }}',
+                        brand: {
+                            400: '{{ settings.theme_color if settings and settings.theme_color else "#7cff95" }}',
+                            500: '{{ settings.theme_color if settings and settings.theme_color else "#7cff95" }}'
                         }
                     }
                 }
             }
-        }
+        };
     </script>
+
     <style>
         :root {
-            --primary-color: {
-                    {
-                    settings.theme_color if settings and settings.theme_color else "#00ff00"
-                }
-            }
-
-            ;
+            --primary-color: {{ settings.theme_color if settings and settings.theme_color else "#7cff95" }};
         }
     </style>
 
-    <!-- Custom CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-black text-white font-mono">
-    <!-- Background Elements -->
+<body class="page-shell bg-black text-white">
     {% if not is_download and not request.args.get('download') %}
-    <div id="neural-bg" class="neural-bg"></div>
-    <div class="cyber-grid"></div>
-    <div class="scanlines"></div>
+    <div class="page-orb page-orb-one"></div>
+    <div class="page-orb page-orb-two"></div>
+    <div class="page-grid"></div>
     {% endif %}
 
-    <!-- Navigation -->
     {% if not is_download and not request.args.get('download') %}
-    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 border-b border-green-500 backdrop-blur-sm print:hidden">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <a href="{{ url_for('public.index') }}" class="text-2xl font-bold neon-text glitch"
-                    data-text="{{ settings.site_name if settings and settings.site_name else 'MADHESH' }}">{{
-                    settings.site_name if settings and settings.site_name else 'MADHESH' }}</a>
+    <nav class="site-nav print:hidden">
+        <div class="container mx-auto px-6">
+            <div class="nav-panel flex items-center justify-between">
+                <a href="{{ url_for('public.index') }}" class="brand-mark">
+                    {{ settings.site_name if settings and settings.site_name else 'MADHESH' }}
+                </a>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-8">
-                    <a href="{{ url_for('public.index') }}" class="hover:text-green-500 transition">Home</a>
-                    <a href="{{ url_for('public.about') }}" class="hover:text-green-500 transition">About</a>
-                    <a href="{{ url_for('public.projects') }}" class="hover:text-green-500 transition">Projects</a>
-                    <a href="{{ url_for('public.blog') }}" class="hover:text-green-500 transition">Blog</a>
-                    <a href="{{ url_for('public.contact') }}" class="hover:text-green-500 transition">Contact</a>
+                <div class="hidden md:flex items-center gap-8 text-sm uppercase tracking-[0.22em] text-slate-300">
+                    <a href="{{ url_for('public.index') }}" class="nav-link">Home</a>
+                    <a href="{{ url_for('public.about') }}" class="nav-link">About</a>
+                    <a href="{{ url_for('public.projects') }}" class="nav-link">Projects</a>
+                    <a href="{{ url_for('public.blog') }}" class="nav-link">Blog</a>
+                    <a href="{{ url_for('public.contact') }}" class="nav-link">Contact</a>
                 </div>
 
-                <!-- Social Icons - Desktop -->
-                <div class="hidden md:flex space-x-3">
+                <div class="hidden md:flex items-center gap-3">
                     {% if settings and settings.github_url %}
-                    <a href="{{ settings.github_url }}" target="_blank" class="social-icon">
+                    <a href="{{ settings.github_url }}" target="_blank" class="social-icon" aria-label="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
                     {% endif %}
                     {% if settings and settings.linkedin_url %}
-                    <a href="{{ settings.linkedin_url }}" target="_blank" class="social-icon">
+                    <a href="{{ settings.linkedin_url }}" target="_blank" class="social-icon" aria-label="LinkedIn">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
                     {% endif %}
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <button class="md:hidden text-green-500" id="menu-btn">
-                    <i class="fas fa-bars text-2xl"></i>
+                <button class="md:hidden nav-toggle" id="menu-btn" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
         </div>
     </nav>
     {% endif %}
 
-    <!-- Mobile Menu -->
     {% if not is_download %}
-    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-95 z-40 hidden print:hidden" id="mobile-menu">
-        <div class="flex flex-col items-center justify-center h-full space-y-8">
-            <a href="{{ url_for('public.index') }}" class="text-2xl hover:text-green-500">Home</a>
-            <a href="{{ url_for('public.about') }}" class="text-2xl hover:text-green-500">About</a>
-            <a href="{{ url_for('public.projects') }}" class="text-2xl hover:text-green-500">Projects</a>
-            <a href="{{ url_for('public.blog') }}" class="text-2xl hover:text-green-500">Blog</a>
-            <a href="{{ url_for('public.contact') }}" class="text-2xl hover:text-green-500">Contact</a>
+    <div class="mobile-drawer hidden print:hidden" id="mobile-menu">
+        <div class="mobile-drawer-panel">
+            <div class="flex items-center justify-between mb-10">
+                <span class="brand-mark text-xl">
+                    {{ settings.site_name if settings and settings.site_name else 'MADHESH' }}
+                </span>
+                <button class="nav-toggle" id="close-menu" aria-label="Close menu">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
-            <div class="flex space-x-6 mt-8">
+            <div class="flex flex-col gap-5 text-lg">
+                <a href="{{ url_for('public.index') }}" class="mobile-link">Home</a>
+                <a href="{{ url_for('public.about') }}" class="mobile-link">About</a>
+                <a href="{{ url_for('public.projects') }}" class="mobile-link">Projects</a>
+                <a href="{{ url_for('public.blog') }}" class="mobile-link">Blog</a>
+                <a href="{{ url_for('public.contact') }}" class="mobile-link">Contact</a>
+            </div>
+
+            <div class="flex items-center gap-3 mt-10">
                 {% if settings and settings.github_url %}
-                <a href="{{ settings.github_url }}" target="_blank"
-                    class="text-2xl text-green-500 hover:text-green-400">
+                <a href="{{ settings.github_url }}" target="_blank" class="social-icon" aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
                 {% endif %}
                 {% if settings and settings.linkedin_url %}
-                <a href="{{ settings.linkedin_url }}" target="_blank"
-                    class="text-2xl text-green-500 hover:text-green-400">
+                <a href="{{ settings.linkedin_url }}" target="_blank" class="social-icon" aria-label="LinkedIn">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
                 {% endif %}
             </div>
-
-            <button class="mt-8 text-green-500" id="close-menu">
-                <i class="fas fa-times text-3xl"></i>
-            </button>
         </div>
     </div>
     {% endif %}
 
-    <!-- Main Content -->
     <main>
         {% if not is_download %}
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        {% for category, message in messages %}
-        <div class="fixed top-20 right-6 z-50 animate-bounce print:hidden">
+        <div class="flash-stack print:hidden">
+            {% for category, message in messages %}
             <div
-                class="bg-black border-2 {% if category == 'success' %}border-green-500 text-green-500{% elif category == 'danger' %}border-red-500 text-red-500{% else %}border-blue-500 text-blue-500{% endif %} px-6 py-3 rounded-lg neon-border">
+                class="flash-card {% if category == 'success' %}flash-success{% elif category in ['danger', 'error'] %}flash-error{% else %}flash-info{% endif %}">
                 {{ message }}
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
         {% endif %}
         {% endwith %}
         {% endif %}
@@ -159,34 +145,35 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     {% if not is_download and not request.args.get('download') %}
-    <footer class="bg-black border-t border-green-500 py-8 print:hidden">
+    <footer class="site-footer print:hidden">
         <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="text-center md:text-left mb-4 md:mb-0">
-                    <p class="text-gray-400">&copy; 2026 Madhesh. All rights reserved.</p>
+            <div class="footer-panel">
+                <div>
+                    <p class="footer-title">{{ settings.owner_name if settings and settings.owner_name else 'Madhesh' }}</p>
+                    <p class="footer-copy">
+                        {{ settings.tagline if settings and settings.tagline else 'AI, security, and product-focused engineering.' }}
+                    </p>
                 </div>
 
-                <!-- Social Icons - Footer -->
-                <div class="flex space-x-4">
+                <div class="footer-actions">
                     {% if settings and settings.github_url %}
-                    <a href="{{ settings.github_url }}" target="_blank" class="social-icon">
+                    <a href="{{ settings.github_url }}" target="_blank" class="social-icon" aria-label="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
                     {% endif %}
                     {% if settings and settings.linkedin_url %}
-                    <a href="{{ settings.linkedin_url }}" target="_blank" class="social-icon">
+                    <a href="{{ settings.linkedin_url }}" target="_blank" class="social-icon" aria-label="LinkedIn">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
                     {% endif %}
                     {% if settings and settings.whatsapp_url %}
-                    <a href="{{ settings.whatsapp_url }}" target="_blank" class="social-icon">
+                    <a href="{{ settings.whatsapp_url }}" target="_blank" class="social-icon" aria-label="WhatsApp">
                         <i class="fab fa-whatsapp"></i>
                     </a>
                     {% endif %}
                     {% if settings and settings.instagram_url %}
-                    <a href="{{ settings.instagram_url }}" target="_blank" class="social-icon">
+                    <a href="{{ settings.instagram_url }}" target="_blank" class="social-icon" aria-label="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
                     {% endif %}
@@ -196,32 +183,23 @@
     </footer>
     {% endif %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js" defer></script>
-    <script src="{{ url_for('static', filename='js/three-background.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/ai-animation.js') }}" defer></script>
+    <script>
+        const menuButton = document.getElementById('menu-btn');
+        const closeButton = document.getElementById('close-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuButton?.addEventListener('click', () => {
+            mobileMenu?.classList.remove('hidden');
+            document.body.classList.add('menu-open');
+        });
+
+        closeButton?.addEventListener('click', () => {
+            mobileMenu?.classList.add('hidden');
+            document.body.classList.remove('menu-open');
+        });
+    </script>
     <script src="{{ url_for('static', filename='js/scroll-animations.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/typewriter.js') }}" defer></script>
-
-    <script>
-        document.getElementById('menu-btn')?.addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.remove('hidden');
-        });
-
-        document.getElementById('close-menu')?.addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.add('hidden');
-        });
-
-        // Initialize VanillaTilt for elements with data-tilt (disable on mobile for performance)
-        if (window.innerWidth > 768) {
-            VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
-                max: 15,
-                speed: 400,
-                glare: true,
-                "max-glare": 0.2,
-            });
-        }
-    </script>
-
     {% block extra_scripts %}{% endblock %}
 </body>
 
